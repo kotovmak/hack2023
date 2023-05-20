@@ -2,6 +2,8 @@
 
 https://leaders2023.innoagency.ru
 
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/plantuml/plantuml-server/master/src/main/webapp/resource/test2diagrams.txt)
+
 # Получение ответа в чате
 @startuml user_story_1
 actor User order 10
