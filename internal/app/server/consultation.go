@@ -8,17 +8,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// getTypeList Получить список справочников
+// getTypeList список надзорных органов, видов контроля, тем консультирования
 // getTypeList godoc
-// @Summary Получить список справочников
-// @Tags contact
-// @Description Получить список справочников
+// @Summary список надзорных органов, видов контроля, тем консультирования
+// @Tags consultation
+// @Description список надзорных органов, видов контроля, тем консультирования
 // @Produce json
 // @Success 200 {object} []model.TypeList
 // @Failure 400 {object} model.ResponseError
 // @Failure 500 {object} model.ResponseError
 // @Security ApiKeyAuth
-// @Router /v1/getTypeList [get]
+// @Router /v1/typelist [get]
 func (s *server) getTypeList(c echo.Context) error {
 	inn := c.FormValue("inn")
 
