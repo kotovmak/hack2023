@@ -26,6 +26,6 @@ run:
 
 .PHONY: swagger
 swagger:
-	~/go/bin/swag init -g cmd/tender-api/main.go --exclude dist/
+	~/go/bin/swag init -g cmd/hack2023/main.go --exclude dist/
 
 .DEFAULT_GOAL := run

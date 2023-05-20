@@ -1,0 +1,120 @@
+basePath: /api
+definitions:
+  model.AuthResponse:
+    properties:
+      access_token:
+        description: AccessToken
+        type: string
+      refresh_token:
+        description: RefreshToken
+        type: string
+    type: object
+  model.ResponseError:
+    properties:
+      error:
+        type: string
+    type: object
+  model.TypeList:
+    type: object
+host: 91.232.135.86:8081
+info:
+  contact: {}
+  description: API for flutter app
+  title: Hack2023
+  version: "1.0"
+paths:
+  /v1/getTypeList:
+    get:
+      description: Получить список справочников
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.TypeList'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Получить список справочников
+      tags:
+      - contact
+  /v1/login:
+    post:
+      description: Получение токена авторизации
+      parameters:
+      - description: login
+        in: formData
+        name: login
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AuthResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      summary: Получение токена авторизации
+      tags:
+      - auth
+  /v1/token:
+    post:
+      description: Получение токена авторизации по refresh токену
+      parameters:
+      - description: refresh_token
+        in: formData
+        name: refresh_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AuthResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      summary: Получение токена авторизации по refresh токену
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    description: Enter the token with the `Bearer ` prefix, e.g. "Bearer abcde12345".
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
