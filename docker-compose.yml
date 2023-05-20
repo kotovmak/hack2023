@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    container_name: hack2023
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'sitemanager'
+      MYSQL_ROOT_PASSWORD: 'password'
