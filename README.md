@@ -2,8 +2,7 @@
 
 https://leaders2023.innoagency.ru
 
-![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/plantuml/plantuml-server/master/src/main/webapp/resource/test2diagrams.txt)
-
+```plantuml
 # Получение ответа в чате
 @startuml user_story_1
 actor User order 10
@@ -15,8 +14,10 @@ Chatbot -> Chatbot : Обработка ключевых слов
 Chatbot -> User : Вывод ответа, ответ удовлетворил пользователя
 deactivate Chatbot
 @enduml
+```
 
 # Запись на консультацию
+```plantuml
 @startuml user_story_2
 actor User order 10
 participant "Чат-бот" as Chatbot order 20
@@ -39,3 +40,4 @@ Consultation -> Officer : Напоминание, видеозвонок
 Consultation -> User : Напоминание, видеозвонок
 deactivate Consultation
 @enduml
+```
