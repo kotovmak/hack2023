@@ -50,7 +50,7 @@ func (s *server) login(c echo.Context) error {
 		Email:  user.Email,
 		Name:   user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 1)},
+			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 24 * 30)},
 		},
 	}
 
@@ -149,7 +149,7 @@ func (s *server) handleToken(c echo.Context) error {
 		Email:  user.Email,
 		Name:   user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 1)},
+			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 24 * 30)},
 		},
 	}
 
