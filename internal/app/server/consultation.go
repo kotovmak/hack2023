@@ -20,13 +20,8 @@ import (
 // @Security ApiKeyAuth
 // @Router /v1/typelist [get]
 func (s *server) getTypeList(c echo.Context) error {
-	inn := c.FormValue("inn")
 
-	if len(inn) < 10 || len(inn) > 12 || len(inn) == 11 {
-		return echo.ErrBadRequest
-	}
-
-	contacts, err := s.store.GetTypeList(c.Request().Context(), inn)
+	tl, err := s.store.GetTypeList(c.Request().Context())
 	if err != nil {
 		log.Print(err)
 		if err == sql.ErrNoRows {
@@ -35,5 +30,5 @@ func (s *server) getTypeList(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	return c.JSON(http.StatusOK, contacts)
+	return c.JSON(http.StatusOK, tl)
 }

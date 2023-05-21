@@ -17,12 +17,20 @@ test:
 migrate-create:
 	migrate create -ext sql -dir migrations/ -seq $(name)
 
+.PHONY: up
+up:
+	migrate -path migrations -database "mysql://root:password@tcp(localhost:3306)/hack2023" up
+
+.PHONY: down
+down:
+	migrate -path migrations -database "mysql://root:password@tcp(localhost:3306)/hack2023" down
+
 .PHONY: run
 run: 
 	go fmt ./internal/app/...
 	go vet -composites=false ./internal/app/...
 	go test -cover -race -v -timeout 30s ./internal/app/...
-	go run ./cmd/tender-api
+	go run ./cmd/hack2023
 
 .PHONY: swagger
 swagger:

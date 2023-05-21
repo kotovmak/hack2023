@@ -8,5 +8,5 @@ services:
     container_name: hack2023
     restart: always
     environment:
-      MYSQL_DATABASE: 'sitemanager'
+      MYSQL_DATABASE: 'hack2023'
       MYSQL_ROOT_PASSWORD: 'password'
