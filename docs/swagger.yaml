@@ -9,12 +9,70 @@ definitions:
         description: RefreshToken
         type: string
     type: object
+  model.ConsultTopic:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.ControlType:
+    properties:
+      consult_topics:
+        items:
+          $ref: '#/definitions/model.ConsultTopic'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.NadzonOrgan:
+    properties:
+      control_types:
+        items:
+          $ref: '#/definitions/model.ControlType'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.PravAct:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   model.ResponseError:
     properties:
       error:
         type: string
     type: object
+  model.Service:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   model.TypeList:
+    properties:
+      nadzor_organs:
+        items:
+          $ref: '#/definitions/model.NadzonOrgan'
+        type: array
+      prav_acts:
+        items:
+          $ref: '#/definitions/model.PravAct'
+        type: array
+      services:
+        items:
+          $ref: '#/definitions/model.Service'
+        type: array
     type: object
 host: hack.torbeno.ru
 info:

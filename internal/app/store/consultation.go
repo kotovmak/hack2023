@@ -7,36 +7,10 @@ import (
 )
 
 func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) {
-	no := make(map[int]model.NadzonOrgan)
-	ct := make(map[int]model.ControlType)
 	topics := make(map[int][]model.ConsultTopic)
+	types := make(map[int][]model.ControlType)
 
 	data, err := s.db.QueryContext(
-		ctx,
-		`SELECT 
-			ID,
-  		UF_NAME
-		FROM 
-			z_nadzor_organs
-		`)
-	if err != nil && err != sql.ErrNoRows {
-		return tl, err
-	}
-	// Обход результатов
-	for data.Next() {
-		p := model.NadzonOrgan{}
-		err = data.Scan(
-			&p.ID,
-			&p.Name,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return tl, err
-		}
-		tl.NadzonOrgans = append(tl.NadzonOrgans, p)
-		no[p.ID] = p
-	}
-
-	data, err = s.db.QueryContext(
 		ctx,
 		`SELECT 
 			ID,
@@ -71,35 +45,6 @@ func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) 
 		`SELECT 
 			ID,
   		UF_NAME,
-			UF_NADZOR_ORGAN_ID
-		FROM 
-			z_control_types
-		`)
-	if err != nil && err != sql.ErrNoRows {
-		return tl, err
-	}
-	// Обход результатов
-	for data.Next() {
-		p := model.ControlType{}
-		var no_id int
-		err = data.Scan(
-			&p.ID,
-			&p.Name,
-			&no_id,
-		)
-		if err != nil && err != sql.ErrNoRows {
-			return tl, err
-		}
-		p.NadzonOrgan = no[no_id]
-		ct[p.ID] = p
-		tl.ControlTypes = append(tl.ControlTypes, p)
-	}
-
-	data, err = s.db.QueryContext(
-		ctx,
-		`SELECT 
-			ID,
-  		UF_NAME,
 			UF_NADZOR_ORGAN_ID,
 			UF_CONTROL_TYPE_ID
 		FROM 
@@ -121,9 +66,60 @@ func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) 
 		if err != nil && err != sql.ErrNoRows {
 			return tl, err
 		}
-		p.ControlType = ct[ct_id]
-		topics[no_id] = append(topics[no_id], p)
-		tl.ConsultTopics = append(tl.ConsultTopics, p)
+		topics[ct_id] = append(topics[ct_id], p)
+	}
+
+	data, err = s.db.QueryContext(
+		ctx,
+		`SELECT 
+			ID,
+  		UF_NAME,
+			UF_NADZOR_ORGAN_ID
+		FROM 
+			z_control_types
+		`)
+	if err != nil && err != sql.ErrNoRows {
+		return tl, err
+	}
+	// Обход результатов
+	for data.Next() {
+		var no_id int
+		p := model.ControlType{}
+		err = data.Scan(
+			&p.ID,
+			&p.Name,
+			&no_id,
+		)
+		if err != nil && err != sql.ErrNoRows {
+			return tl, err
+		}
+		p.ConsultTopics = topics[p.ID]
+		types[no_id] = append(types[no_id], p)
+	}
+
+	data, err = s.db.QueryContext(
+		ctx,
+		`SELECT 
+			ID,
+  		UF_NAME
+		FROM 
+			z_nadzor_organs
+		`)
+	if err != nil && err != sql.ErrNoRows {
+		return tl, err
+	}
+	// Обход результатов
+	for data.Next() {
+		p := model.NadzonOrgan{}
+		err = data.Scan(
+			&p.ID,
+			&p.Name,
+		)
+		if err != nil && err != sql.ErrNoRows {
+			return tl, err
+		}
+		p.ControlTypes = types[p.ID]
+		tl.NadzonOrgans = append(tl.NadzonOrgans, p)
 	}
 
 	data, err = s.db.QueryContext(
@@ -152,12 +148,7 @@ func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) 
 		if err != nil && err != sql.ErrNoRows {
 			return tl, err
 		}
-		p.ControlType = ct[ct_id]
 		tl.PravActs = append(tl.PravActs, p)
-	}
-
-	for i, v := range tl.NadzonOrgans {
-		tl.NadzonOrgans[i].ConsultTopic = topics[v.ID]
 	}
 
 	return tl, nil

@@ -166,6 +166,62 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ConsultTopic": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ControlType": {
+            "type": "object",
+            "properties": {
+                "consult_topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ConsultTopic"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.NadzonOrgan": {
+            "type": "object",
+            "properties": {
+                "control_types": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ControlType"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PravAct": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ResponseError": {
             "type": "object",
             "properties": {
@@ -174,8 +230,42 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Service": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.TypeList": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "nadzor_organs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.NadzonOrgan"
+                    }
+                },
+                "prav_acts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PravAct"
+                    }
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Service"
+                    }
+                }
+            }
         }
     },
     "securityDefinitions": {
