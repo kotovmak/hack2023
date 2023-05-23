@@ -153,3 +153,33 @@ func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) 
 
 	return tl, nil
 }
+
+func (s *Store) GetSlotList(ctx context.Context) (map[string][]model.Slot, error) {
+	sl := make(map[string][]model.Slot)
+	data, err := s.db.QueryContext(
+		ctx,
+		`SELECT 
+			ID,
+  		UF_TIME,
+			UF_DATE
+		FROM 
+			z_slots
+		`)
+	if err != nil && err != sql.ErrNoRows {
+		return sl, err
+	}
+	// Обход результатов
+	for data.Next() {
+		p := model.Slot{}
+		err = data.Scan(
+			&p.ID,
+			&p.Time,
+			&p.Date,
+		)
+		if err != nil {
+			return sl, err
+		}
+		sl[p.Date] = append(sl[p.Date], p)
+	}
+	return sl, nil
+}

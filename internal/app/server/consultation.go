@@ -32,3 +32,28 @@ func (s *server) getTypeList(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, tl)
 }
+
+// getSlotList список доступных слотов
+// getSlotList godoc
+// @Summary список доступных слотов
+// @Tags consultation
+// @Description список доступных слотов
+// @Produce json
+// @Success 200 {object} []model.Slot
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Security ApiKeyAuth
+// @Router /v1/slot [get]
+func (s *server) getSlotList(c echo.Context) error {
+
+	tl, err := s.store.GetSlotList(c.Request().Context())
+	if err != nil {
+		log.Print(err)
+		if err == sql.ErrNoRows {
+			return sql.ErrNoRows
+		}
+		return echo.ErrInternalServerError
+	}
+
+	return c.JSON(http.StatusOK, tl)
+}

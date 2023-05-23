@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type TypeList struct {
 	NadzonOrgans []NadzonOrgan `json:"nadzor_organs"`
 	Services     []Service     `json:"services"`
@@ -32,4 +34,27 @@ type ConsultTopic struct {
 type PravAct struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+}
+
+type Consultation struct {
+	ID             int       `json:"id"`
+	NadzonOrganID  int       `json:"nadzor_organ_ID"`
+	ControlTypeID  int       `json:"control_type_id"`
+	ConsultTopicID int       `json:"consult_topic_id"`
+	UserID         int       `json:"user_id"`
+	Time           string    `json:"time"`
+	Date           time.Time `json:"date"`
+	IsNeedLetter   bool      `json:"is_need_letter"`
+	IsConfirmed    bool      `json:"is_confirmed"`
+}
+
+type Consultations struct {
+	Active   []Consultation `json:"active"`
+	Finished []Consultation `json:"finished"`
+}
+
+type Slot struct {
+	ID   int    `json:"id"`
+	Time string `json:"time"`
+	Date string `json:"date"`
 }

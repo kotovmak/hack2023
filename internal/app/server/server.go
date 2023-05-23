@@ -64,6 +64,7 @@ func (s *server) configureRouter() {
 					ParseTokenFunc: s.ParseTokenFunc,
 				}))
 				authGroup.GET("/typelist", s.getTypeList)
+				authGroup.GET("/slot", s.getSlotList)
 			}
 		}
 	}
