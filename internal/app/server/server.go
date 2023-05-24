@@ -65,6 +65,7 @@ func (s *server) configureRouter() {
 				}))
 				authGroup.GET("/typelist", s.getTypeList)
 				authGroup.GET("/slot", s.getSlotList)
+				authGroup.GET("/consultation", s.getConsultationList)
 			}
 		}
 	}

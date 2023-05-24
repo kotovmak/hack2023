@@ -7,7 +7,7 @@ build:
 	ssh -f 91 'pkill hack.app'
 	scp ./dist/hack.app 91:/home/bitrix/www/hack2023/
 	$(eval REVISION = $(shell git log -1 --pretty=format:"%H"))
-	ssh -f 91 'export VERSION="${git_tag}" && export REVISION="$(REVISION)" && export APP_TIER="prod" && nohup /home/bitrix/www/hack2023/hack.app /dev/null 2>&1 &'
+	ssh -f 91 'export VERSION="${git_tag}" && export REVISION="$(REVISION)" && export APP_TIER="prod" && screen -dmS hack /home/bitrix/www/hack2023/hack.app /dev/null 2>&1 &'
 
 .PHONY: test
 test:

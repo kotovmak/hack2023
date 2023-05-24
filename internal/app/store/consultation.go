@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"hack2023/internal/app/model"
+	"time"
 )
 
 func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) {
@@ -182,4 +183,60 @@ func (s *Store) GetSlotList(ctx context.Context) (map[string][]model.Slot, error
 		sl[p.Date] = append(sl[p.Date], p)
 	}
 	return sl, nil
+}
+
+func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, error) {
+	cl := model.Consultations{}
+	var (
+		question     sql.NullString
+		isNeedLetter sql.NullBool
+		isConfirmed  sql.NullBool
+	)
+	data, err := s.db.QueryContext(
+		ctx,
+		`SELECT 
+			ID,
+  		UF_TIME,
+			UF_DATE,
+  		UF_QUESTION,
+  		UF_NADZOR_ORGAN_ID,
+  		UF_CONTROL_TYPE_ID,
+  		UF_CONSULT_TOPIC_ID,
+  		UF_USER_ID,
+  		UF_IS_NEED_LATTER,
+			UF_IS_CONFIRMED
+		FROM 
+			z_consultations
+		`)
+	if err != nil && err != sql.ErrNoRows {
+		return cl, err
+	}
+	// Обход результатов
+	for data.Next() {
+		p := model.Consultation{}
+		err = data.Scan(
+			&p.ID,
+			&p.Time,
+			&p.Date,
+			&question,
+			&p.NadzonOrganID,
+			&p.ControlTypeID,
+			&p.ConsultTopicID,
+			&p.UserID,
+			&isNeedLetter,
+			&isConfirmed,
+		)
+		if err != nil {
+			return cl, err
+		}
+		p.Question = question.String
+		p.IsConfirmed = isConfirmed.Bool
+		p.IsNeedLetter = isNeedLetter.Bool
+		if p.Date.Unix() > time.Now().Unix() {
+			cl.Active = append(cl.Active, p)
+		} else {
+			cl.Finished = append(cl.Finished, p)
+		}
+	}
+	return cl, nil
 }

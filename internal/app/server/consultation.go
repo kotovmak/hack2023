@@ -57,3 +57,28 @@ func (s *server) getSlotList(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, tl)
 }
+
+// getConsultationList список активных и завершенных консультаций
+// getConsultationList godoc
+// @Summary список активных и завершенных консультаций
+// @Tags consultation
+// @Description список активных и завершенных консультаций
+// @Produce json
+// @Success 200 {object} model.Consultatios
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Security ApiKeyAuth
+// @Router /v1/consultation [get]
+func (s *server) getConsultationList(c echo.Context) error {
+
+	tl, err := s.store.GetConsultationList(c.Request().Context())
+	if err != nil {
+		log.Print(err)
+		if err == sql.ErrNoRows {
+			return sql.ErrNoRows
+		}
+		return echo.ErrInternalServerError
+	}
+
+	return c.JSON(http.StatusOK, tl)
+}

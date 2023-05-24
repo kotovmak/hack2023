@@ -38,12 +38,13 @@ type PravAct struct {
 
 type Consultation struct {
 	ID             int       `json:"id"`
-	NadzonOrganID  int       `json:"nadzor_organ_ID"`
+	NadzonOrganID  int       `json:"nadzor_organ_id"`
 	ControlTypeID  int       `json:"control_type_id"`
 	ConsultTopicID int       `json:"consult_topic_id"`
 	UserID         int       `json:"user_id"`
 	Time           string    `json:"time"`
 	Date           time.Time `json:"date"`
+	Question       string    `json:"question"`
 	IsNeedLetter   bool      `json:"is_need_letter"`
 	IsConfirmed    bool      `json:"is_confirmed"`
 }
