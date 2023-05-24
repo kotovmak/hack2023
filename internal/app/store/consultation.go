@@ -189,13 +189,13 @@ func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, e
 	cl := model.Consultations{}
 	var (
 		question     sql.NullString
+		date         sql.NullTime
 		isNeedLetter sql.NullBool
 		isConfirmed  sql.NullBool
 	)
 	data, err := s.db.QueryContext(
 		ctx,
 		`SELECT 
-			ID,
   		UF_TIME,
 			UF_DATE,
   		UF_QUESTION,
@@ -215,9 +215,8 @@ func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, e
 	for data.Next() {
 		p := model.Consultation{}
 		err = data.Scan(
-			&p.ID,
 			&p.Time,
-			&p.Date,
+			&date,
 			&question,
 			&p.NadzonOrganID,
 			&p.ControlTypeID,
@@ -229,6 +228,8 @@ func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, e
 		if err != nil {
 			return cl, err
 		}
+		p.Date = date.Time
+		p.DateExport = date.Time.Format("2006-01-02")
 		p.Question = question.String
 		p.IsConfirmed = isConfirmed.Bool
 		p.IsNeedLetter = isNeedLetter.Bool
@@ -239,4 +240,35 @@ func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, e
 		}
 	}
 	return cl, nil
+}
+
+func (s *Store) AddConsultation(ctx context.Context, cl model.Consultation) error {
+	if _, err := s.db.QueryContext(
+		ctx,
+		`INSERT INTO
+			 z_consultations (
+				UF_TIME,
+				UF_DATE,
+				UF_QUESTION,
+				UF_NADZOR_ORGAN_ID,
+				UF_CONTROL_TYPE_ID,
+				UF_CONSULT_TOPIC_ID,
+				UF_USER_ID,
+				UF_IS_NEED_LATTER
+			 )
+		VALUES 
+			(?,?,?,?,?,?,?,?)
+		`,
+		cl.Time,
+		cl.Date,
+		cl.Question,
+		cl.NadzonOrganID,
+		cl.ControlTypeID,
+		cl.ConsultTopicID,
+		cl.UserID,
+		cl.IsNeedLetter,
+	); err != nil {
+		return err
+	}
+	return nil
 }
