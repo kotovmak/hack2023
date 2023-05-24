@@ -63,6 +63,7 @@ func (s *server) configureRouter() {
 				authGroup.Use(echojwt.WithConfig(echojwt.Config{
 					ParseTokenFunc: s.ParseTokenFunc,
 				}))
+				authGroup.GET("/user", s.getUser)
 				authGroup.GET("/typelist", s.getTypeList)
 				authGroup.GET("/slot", s.getSlotList)
 				authGroup.GET("/consultation", s.getConsultationList)

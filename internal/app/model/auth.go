@@ -3,9 +3,9 @@ package model
 import "github.com/golang-jwt/jwt/v4"
 
 type Claims struct {
-	UserID int    `json:"user_id"`
-	Email  string `json:"email"`
-	Name   string `json:"name"`
+	Login string `json:"login"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
 	jwt.RegisteredClaims
 }
 
@@ -25,8 +25,8 @@ type AuthResponse struct {
 
 type Account struct {
 	ID       int    `json:"id"`
-	Login    string `json:"login"`
+	Login    string `json:"-"`
 	Email    string `json:"email"`
 	Name     string `json:"name"`
-	Password string `json:"password"`
+	Password string `json:"-"`
 }

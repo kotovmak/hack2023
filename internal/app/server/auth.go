@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"hack2023/internal/app/model"
 	"log"
 	"net/http"
@@ -10,6 +11,31 @@ import (
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
+
+// getUser Получение данных о пользователе
+// getUser godoc
+// @Summary Получение данных о пользователе
+// @Tags auth
+// @Description Получение данных о пользователе
+// @Produce json
+// @Success 200 {object} []model.Account
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Router /v1/user [get]
+func (s *server) getUser(c echo.Context) error {
+	claims := c.Get("user").(*model.Claims)
+	login := claims.Login
+	tl, err := s.store.GetUserByLogin(c.Request().Context(), login)
+	if err != nil {
+		log.Print(err)
+		if err == sql.ErrNoRows {
+			return sql.ErrNoRows
+		}
+		return echo.ErrInternalServerError
+	}
+
+	return c.JSON(http.StatusOK, tl)
+}
 
 // login Получение токена авторизации
 // login godoc
@@ -46,9 +72,9 @@ func (s *server) login(c echo.Context) error {
 
 	// Set custom claims
 	claims := &model.Claims{
-		UserID: user.ID,
-		Email:  user.Email,
-		Name:   user.Name,
+		Login: user.Login,
+		Email: user.Email,
+		Name:  user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 24 * 30)},
 		},
@@ -145,9 +171,9 @@ func (s *server) handleToken(c echo.Context) error {
 
 	// Set custom claims
 	newClaims := &model.Claims{
-		UserID: user.ID,
-		Email:  user.Email,
-		Name:   user.Name,
+		Login: user.Login,
+		Email: user.Email,
+		Name:  user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 24 * 30)},
 		},
