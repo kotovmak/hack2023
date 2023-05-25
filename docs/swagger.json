@@ -93,6 +93,14 @@
                         "required": true
                     },
                     {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "id слота с временем и датой консультации",
+                        "name": "slot_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
                         "type": "string",
                         "description": "время в формате '03:00'",
                         "name": "time",
@@ -124,6 +132,51 @@
                 "responses": {
                     "201": {
                         "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Consultation"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Отменить запись на консультацию",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "consultation"
+                ],
+                "summary": "Отменить запись на консультацию",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "id консультации которую нужно отменить",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Consultation"
                         }
@@ -395,6 +448,14 @@
         },
         "model.Consultation": {
             "type": "object",
+            "required": [
+                "consult_topic_id",
+                "control_type_id",
+                "nadzor_organ_id",
+                "slot_id",
+                "time",
+                "user_id"
+            ],
             "properties": {
                 "consult_topic_id": {
                     "type": "integer"
@@ -405,7 +466,13 @@
                 "date": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "is_confirmed": {
+                    "type": "boolean"
+                },
+                "is_deleted": {
                     "type": "boolean"
                 },
                 "is_need_letter": {
@@ -417,11 +484,20 @@
                 "question": {
                     "type": "string"
                 },
+                "slot_id": {
+                    "type": "integer"
+                },
                 "time": {
                     "type": "string"
                 },
                 "user_id": {
                     "type": "integer"
+                },
+                "video_link": {
+                    "type": "string"
+                },
+                "vks_link": {
+                    "type": "string"
                 }
             }
         },

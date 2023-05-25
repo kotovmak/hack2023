@@ -8,6 +8,7 @@ import (
 
 	_ "hack2023/docs"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -47,6 +48,7 @@ func (s *server) Start(config config.Config) error {
 // configureRouter Объявляем список доступных роутов
 func (s *server) configureRouter() {
 	s.router.Use(middleware.RequestID())
+	s.router.Validator = &model.CustomValidator{Validator: validator.New()}
 	api := s.router.Group("/api", s.ErrorHandler)
 	{
 		api.GET("/", s.handleVersion)
@@ -68,6 +70,7 @@ func (s *server) configureRouter() {
 				authGroup.GET("/slot", s.getSlotList)
 				authGroup.GET("/consultation", s.getConsultationList)
 				authGroup.POST("/consultation", s.addConsultation)
+				authGroup.DELETE("/consultation", s.deleteConsultation)
 			}
 		}
 	}

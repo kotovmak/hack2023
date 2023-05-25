@@ -94,6 +94,7 @@ func (s *server) getConsultationList(c echo.Context) error {
 // @Param	control_type_id	formData int true	"id типа контроля" minimum(1)
 // @Param	consult_topic_id formData int true "id темы консультации" minimum(1)
 // @Param	user_id	formData int true	"id пользователя" minimum(1)
+// @Param	slot_id	formData int true	"id слота с временем и датой консультации" minimum(1)
 // @Param	time formData string true	"время в формате '03:00'"
 // @Param	date formData string true	"дата в формате '2006-02-01'"
 // @Param	question formData string true	"вопрос в свободной форме"
@@ -106,17 +107,68 @@ func (s *server) getConsultationList(c echo.Context) error {
 func (s *server) addConsultation(c echo.Context) error {
 	cl := model.Consultation{}
 	if err := c.Bind(&cl); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	if err := c.Validate(&cl); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	slot, err := s.store.GetSlot(c.Request().Context(), cl.SlotID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return echo.NewHTTPError(http.StatusBadRequest, errSlotBusy.Error())
+		}
+		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	err := s.store.AddConsultation(c.Request().Context(), cl)
+	cl, err = s.store.AddConsultation(c.Request().Context(), cl)
 	if err != nil {
 		log.Print(err)
-		if err == sql.ErrNoRows {
-			return sql.ErrNoRows
-		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	cl.DateExport = cl.Date.Format("2006-01-02")
+	err = s.store.CloseSlot(c.Request().Context(), slot.ID)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
 
+	cl.DateExport = cl.Date.Format("2006-01-02")
 	return c.JSON(http.StatusCreated, cl)
+}
+
+// deleteConsultation Отменить запись на консультацию
+// deleteConsultation godoc
+// @Summary Отменить запись на консультацию
+// @Tags consultation
+// @Description Отменить запись на консультацию
+// @Produce json
+// @Param	id	query int true	"id консультации которую нужно отменить" minimum(1)
+// @Success 200 {object} model.Consultation
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Security ApiKeyAuth
+// @Router /v1/consultation [delete]
+func (s *server) deleteConsultation(c echo.Context) error {
+	consultationID := c.QueryParam("id")
+	if len(consultationID) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "id is required")
+	}
+	cl, err := s.store.GetConsultation(c.Request().Context(), consultationID)
+	if err != nil {
+		log.Print("err 2")
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	err = s.store.DeleteConsultation(c.Request().Context(), consultationID)
+	if err != nil {
+		log.Print("err 1")
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	cl.IsDeleted = true
+	err = s.store.OpenSlot(c.Request().Context(), cl.SlotID)
+	if err != nil {
+		log.Print("err 3")
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	cl.DateExport = cl.Date.Format("2006-01-02")
+	return c.JSON(http.StatusOK, cl)
 }

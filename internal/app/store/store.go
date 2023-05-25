@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"hack2023/internal/app/config"
 	"log"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -17,6 +18,10 @@ func New(config config.Config) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
 
 	err = db.Ping()
 	if err != nil {

@@ -33,7 +33,11 @@ definitions:
         type: integer
       date:
         type: string
+      id:
+        type: integer
       is_confirmed:
+        type: boolean
+      is_deleted:
         type: boolean
       is_need_letter:
         type: boolean
@@ -41,10 +45,23 @@ definitions:
         type: integer
       question:
         type: string
+      slot_id:
+        type: integer
       time:
         type: string
       user_id:
         type: integer
+      video_link:
+        type: string
+      vks_link:
+        type: string
+    required:
+    - consult_topic_id
+    - control_type_id
+    - nadzor_organ_id
+    - slot_id
+    - time
+    - user_id
     type: object
   model.Consultations:
     properties:
@@ -132,6 +149,35 @@ info:
   version: "1.0"
 paths:
   /v1/consultation:
+    delete:
+      description: Отменить запись на консультацию
+      parameters:
+      - description: id консультации которую нужно отменить
+        in: query
+        minimum: 1
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Consultation'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: Отменить запись на консультацию
+      tags:
+      - consultation
     get:
       description: список активных и завершенных консультаций
       produces:
@@ -179,6 +225,12 @@ paths:
         in: formData
         minimum: 1
         name: user_id
+        required: true
+        type: integer
+      - description: id слота с временем и датой консультации
+        in: formData
+        minimum: 1
+        name: slot_id
         required: true
         type: integer
       - description: время в формате '03:00'
