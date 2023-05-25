@@ -114,8 +114,9 @@ func (s *server) addConsultation(c echo.Context) error {
 		if err == sql.ErrNoRows {
 			return sql.ErrNoRows
 		}
-		return echo.ErrInternalServerError
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	cl.DateExport = cl.Date.Format("2006-01-02")
 
 	return c.JSON(http.StatusCreated, cl)
 }
