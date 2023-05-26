@@ -271,10 +271,11 @@ func (s *Store) AddConsultation(ctx context.Context, cl model.Consultation) (mod
 				UF_CONSULT_TOPIC_ID,
 				UF_USER_ID,
 				UF_IS_NEED_LATTER,
-				UF_SLOT_ID
+				UF_SLOT_ID,
+				UF_VKS_LINK
 			 )
 		VALUES 
-			(?,?,?,?,?,?,?,?,?);
+			(?,?,?,?,?,?,?,?,?,?);
 		`,
 	)
 	if err != nil {
@@ -292,6 +293,7 @@ func (s *Store) AddConsultation(ctx context.Context, cl model.Consultation) (mod
 		cl.UserID,
 		cl.IsNeedLetter,
 		cl.SlotID,
+		cl.VKSLink,
 	)
 	if err != nil {
 		return cl, err

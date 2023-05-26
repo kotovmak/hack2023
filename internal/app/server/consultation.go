@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -140,6 +141,7 @@ func (s *server) addConsultation(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	cl.UserID = claims.ID
+	cl.VKSLink = "https://peregovorka.mos.ru/" + uuid.New().String()
 	if err := c.Validate(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
