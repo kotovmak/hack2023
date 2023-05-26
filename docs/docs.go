@@ -94,14 +94,6 @@ const docTemplate = `{
                     {
                         "minimum": 1,
                         "type": "integer",
-                        "description": "id пользователя",
-                        "name": "user_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "minimum": 1,
-                        "type": "integer",
                         "description": "id слота с временем и датой консультации",
                         "name": "slot_id",
                         "in": "formData",
@@ -184,6 +176,58 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Consultation"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Подтверждение консультации со стороны КНО",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "consultation"
+                ],
+                "summary": "Подтверждение консультации со стороны КНО",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "id консультации которую нужно подтвердить",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Подтвердить или нет консультацию",
+                        "name": "apply",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.Consultation"
                         }
@@ -424,6 +468,12 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_kno": {
+                    "type": "boolean"
+                },
+                "nadzor_organ_id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }
@@ -496,6 +546,9 @@ const docTemplate = `{
                 },
                 "time": {
                     "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.Account"
                 },
                 "user_id": {
                     "type": "integer"
@@ -595,6 +648,9 @@ const docTemplate = `{
         "model.Slot": {
             "type": "object",
             "properties": {
+                "consultation": {
+                    "$ref": "#/definitions/model.Consultation"
+                },
                 "date": {
                     "type": "string"
                 },

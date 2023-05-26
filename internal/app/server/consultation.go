@@ -5,6 +5,7 @@ import (
 	"hack2023/internal/app/model"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -184,21 +185,84 @@ func (s *server) deleteConsultation(c echo.Context) error {
 	}
 	cl, err := s.store.GetConsultation(c.Request().Context(), consultationID)
 	if err != nil {
-		log.Print("err 2")
+		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	err = s.store.DeleteConsultation(c.Request().Context(), consultationID)
 	if err != nil {
-		log.Print("err 1")
+		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	cl.IsDeleted = true
 	err = s.store.OpenSlot(c.Request().Context(), cl.SlotID)
 	if err != nil {
-		log.Print("err 3")
+		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	cl.DateExport = cl.Date.Format("2006-01-02")
+	return c.JSON(http.StatusOK, cl)
+}
+
+// applyConsultation Подтверждение консультации со стороны КНО
+// applyConsultation godoc
+// @Summary Подтверждение консультации со стороны КНО
+// @Tags consultation
+// @Description Подтверждение консультации со стороны КНО
+// @Produce json
+// @Param	id formData int true	"id консультации которую нужно подтвердить" minimum(1)
+// @Param	apply formData bool true	"Подтвердить или нет консультацию"
+// @Success 201 {object} model.Consultation
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Security ApiKeyAuth
+// @Router /v1/consultation [patch]
+func (s *server) applyConsultation(c echo.Context) error {
+	claims := c.Get("user").(*model.Claims)
+	isKNO := claims.IsKNO
+
+	if !isKNO {
+		return echo.NewHTTPError(http.StatusNotAcceptable, errOnlyKNO.Error())
+	}
+
+	consultationID := c.FormValue("id")
+	if len(consultationID) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "id is required")
+	}
+
+	apply, err := strconv.ParseBool(c.FormValue("apply"))
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	cl, err := s.store.GetConsultation(c.Request().Context(), consultationID)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	if apply {
+		err = s.store.ApplyConsultation(c.Request().Context(), consultationID)
+		if err != nil {
+			log.Print(err)
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		cl.IsConfirmed = true
+		return c.JSON(http.StatusOK, cl)
+	}
+
+	err = s.store.DeleteConsultation(c.Request().Context(), consultationID)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	cl.IsDeleted = true
+	err = s.store.OpenSlot(c.Request().Context(), cl.SlotID)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
 	return c.JSON(http.StatusOK, cl)
 }

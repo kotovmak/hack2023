@@ -436,3 +436,20 @@ func (s *Store) GetSlot(ctx context.Context, slotID int) (p model.Slot, err erro
 	p.DateExport = p.Date.Format("2006-01-02")
 	return p, nil
 }
+
+func (s *Store) ApplyConsultation(ctx context.Context, consultationID string) error {
+	if _, err := s.db.QueryContext(
+		ctx,
+		`UPDATE 
+			z_consultations
+		SET
+			UF_IS_CONFIRMED = 1
+		WHERE
+			ID = ? AND (UF_IS_DELETED IS NULL OR UF_IS_DELETED = 0)
+		`,
+		consultationID,
+	); err != nil {
+		return err
+	}
+	return nil
+}
