@@ -49,6 +49,7 @@ type Consultation struct {
 	ConsultTopicID int       `json:"consult_topic_id" form:"consult_topic_id" validate:"required"`
 	SlotID         int       `json:"slot_id" form:"slot_id" validate:"required"`
 	UserID         int       `json:"user_id" form:"user_id" validate:"required"`
+	User           *Account  `json:"user,omitempty"`
 	Time           string    `json:"time" form:"time" validate:"required"`
 	Date           time.Time `json:"-" form:"date" validate:"required"`
 	DateExport     string    `json:"date"`
@@ -77,8 +78,9 @@ type Consultations struct {
 }
 
 type Slot struct {
-	ID         int       `json:"id"`
-	Time       string    `json:"time"`
-	Date       time.Time `json:"-"`
-	DateExport string    `json:"date"`
+	ID           int           `json:"id"`
+	Time         string        `json:"time"`
+	Date         time.Time     `json:"-"`
+	DateExport   string        `json:"date"`
+	Consultation *Consultation `json:"consultation,omitempty"`
 }

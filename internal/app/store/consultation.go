@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"hack2023/internal/app/model"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -157,19 +156,20 @@ func (s *Store) GetTypeList(ctx context.Context) (tl model.TypeList, err error) 
 	return tl, nil
 }
 
-func (s *Store) GetSlotList(ctx context.Context) (map[string][]model.Slot, error) {
-	sl := make(map[string][]model.Slot)
-	data, err := s.db.QueryContext(
-		ctx,
-		`SELECT 
+func (s *Store) GetSlotList(ctx context.Context, isKNO bool) (sl []model.Slot, err error) {
+	query := `SELECT 
 			ID,
   		UF_TIME,
 			UF_DATE
 		FROM 
 			z_slots
-		WHERE
+		`
+	if !isKNO {
+		query += `WHERE
 			UF_IS_BUSY IS NULL OR UF_IS_BUSY = 0
-		`)
+		`
+	}
+	data, err := s.db.QueryContext(ctx, query)
 	if err != nil && err != sql.ErrNoRows {
 		return sl, err
 	}
@@ -185,13 +185,13 @@ func (s *Store) GetSlotList(ctx context.Context) (map[string][]model.Slot, error
 			return sl, err
 		}
 		p.DateExport = p.Date.Format("2006-01-02")
-		sl[p.DateExport] = append(sl[p.DateExport], p)
+		sl = append(sl, p)
 	}
 	return sl, nil
 }
 
-func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, error) {
-	cl := model.Consultations{}
+func (s *Store) GetConsultationList(ctx context.Context) (map[int]model.Consultation, error) {
+	cl := make(map[int]model.Consultation)
 	var (
 		question     sql.NullString
 		date         sql.NullTime
@@ -252,11 +252,8 @@ func (s *Store) GetConsultationList(ctx context.Context) (model.Consultations, e
 		p.IsNeedLetter = isNeedLetter.Bool
 		p.VKSLink = VKSLink.String
 		p.VideoLink = videoLink.String
-		if p.Date.Unix() > time.Now().Unix() {
-			cl.Active = append(cl.Active, p)
-		} else {
-			cl.Finished = append(cl.Finished, p)
-		}
+
+		cl[p.SlotID] = p
 	}
 	return cl, nil
 }

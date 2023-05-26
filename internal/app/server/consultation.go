@@ -5,6 +5,7 @@ import (
 	"hack2023/internal/app/model"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -46,8 +47,16 @@ func (s *server) getTypeList(c echo.Context) error {
 // @Security ApiKeyAuth
 // @Router /v1/slot [get]
 func (s *server) getSlotList(c echo.Context) error {
+	claims := c.Get("user").(*model.Claims)
+	isKNO := claims.IsKNO
 
-	tl, err := s.store.GetSlotList(c.Request().Context())
+	cl, err := s.store.GetConsultationList(c.Request().Context())
+	if err != nil {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
+
+	tl, err := s.store.GetSlotList(c.Request().Context(), isKNO)
 	if err != nil {
 		log.Print(err)
 		if err == sql.ErrNoRows {
@@ -55,8 +64,22 @@ func (s *server) getSlotList(c echo.Context) error {
 		}
 		return echo.ErrInternalServerError
 	}
+	sl := make(map[string][]model.Slot)
+	for _, p := range tl {
+		if isKNO && cl[p.ID].ID > 0 {
+			cons := cl[p.ID]
+			user, err := s.store.GetUserByID(c.Request().Context(), cl[p.ID].UserID)
+			if err != nil {
+				log.Print(err)
+				return echo.ErrInternalServerError
+			}
+			cons.User = &user
+			p.Consultation = &cons
+		}
+		sl[p.DateExport] = append(sl[p.DateExport], p)
+	}
 
-	return c.JSON(http.StatusOK, tl)
+	return c.JSON(http.StatusOK, sl)
 }
 
 // getConsultationList список активных и завершенных консультаций
@@ -71,14 +94,19 @@ func (s *server) getSlotList(c echo.Context) error {
 // @Security ApiKeyAuth
 // @Router /v1/consultation [get]
 func (s *server) getConsultationList(c echo.Context) error {
-
 	tl, err := s.store.GetConsultationList(c.Request().Context())
 	if err != nil {
 		log.Print(err)
-		if err == sql.ErrNoRows {
-			return sql.ErrNoRows
-		}
 		return echo.ErrInternalServerError
+	}
+
+	cl := &model.Consultations{}
+	for _, p := range tl {
+		if p.Date.Unix() > time.Now().Unix() {
+			cl.Active = append(cl.Active, p)
+		} else {
+			cl.Finished = append(cl.Finished, p)
+		}
 	}
 
 	return c.JSON(http.StatusOK, tl)
@@ -93,7 +121,6 @@ func (s *server) getConsultationList(c echo.Context) error {
 // @Param	nadzor_organ_id	formData int true	"id надзорного органа" minimum(1)
 // @Param	control_type_id	formData int true	"id типа контроля" minimum(1)
 // @Param	consult_topic_id formData int true "id темы консультации" minimum(1)
-// @Param	user_id	formData int true	"id пользователя" minimum(1)
 // @Param	slot_id	formData int true	"id слота с временем и датой консультации" minimum(1)
 // @Param	time formData string true	"время в формате '03:00'"
 // @Param	date formData string true	"дата в формате '2006-02-01'"
@@ -105,10 +132,13 @@ func (s *server) getConsultationList(c echo.Context) error {
 // @Security ApiKeyAuth
 // @Router /v1/consultation [post]
 func (s *server) addConsultation(c echo.Context) error {
+	claims := c.Get("user").(*model.Claims)
+
 	cl := model.Consultation{}
 	if err := c.Bind(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	cl.UserID = claims.ID
 	if err := c.Validate(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

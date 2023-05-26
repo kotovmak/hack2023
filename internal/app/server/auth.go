@@ -72,9 +72,11 @@ func (s *server) login(c echo.Context) error {
 
 	// Set custom claims
 	claims := &model.Claims{
-		Login: user.Login,
-		Email: user.Email,
-		Name:  user.Name,
+		Login:         user.Login,
+		Email:         user.Email,
+		Name:          user.Name,
+		IsKNO:         user.IsKNO,
+		NadzonOrganID: user.NadzonOrganID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 24 * 30)},
 		},
@@ -171,9 +173,11 @@ func (s *server) handleToken(c echo.Context) error {
 
 	// Set custom claims
 	newClaims := &model.Claims{
-		Login: user.Login,
-		Email: user.Email,
-		Name:  user.Name,
+		Login:         user.Login,
+		Email:         user.Email,
+		Name:          user.Name,
+		IsKNO:         user.IsKNO,
+		NadzonOrganID: user.NadzonOrganID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 24 * 30)},
 		},

@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"hack2023/internal/app/model"
 	"time"
 )
@@ -78,6 +79,10 @@ func (s *Store) GetUserByRefreshToken(ctx context.Context, refresh_token string)
 }
 
 func (s *Store) GetUserByLogin(ctx context.Context, login string) (user model.Account, err error) {
+	var (
+		isKNO         sql.NullBool
+		nadzonOrganID sql.NullInt16
+	)
 	if err := s.db.QueryRowContext(
 		ctx,
 		`SELECT 
@@ -85,7 +90,9 @@ func (s *Store) GetUserByLogin(ctx context.Context, login string) (user model.Ac
 			UF_EMAIL,
 			UF_NAME,
 			UF_LOGIN,
-			UF_PASSWORD
+			UF_PASSWORD,
+			UF_IS_KNO,
+			UF_NADZOR_ORGAN_ID
 		FROM 
 			z_api_users
 		WHERE
@@ -97,8 +104,48 @@ func (s *Store) GetUserByLogin(ctx context.Context, login string) (user model.Ac
 		&user.Name,
 		&user.Login,
 		&user.Password,
+		&isKNO,
+		&nadzonOrganID,
 	); err != nil {
 		return user, err
 	}
+	user.IsKNO = isKNO.Bool
+	user.NadzonOrganID = int(nadzonOrganID.Int16)
+	return user, nil
+}
+
+func (s *Store) GetUserByID(ctx context.Context, id int) (user model.Account, err error) {
+	var (
+		isKNO         sql.NullBool
+		nadzonOrganID sql.NullInt16
+	)
+	if err := s.db.QueryRowContext(
+		ctx,
+		`SELECT 
+			ID,
+			UF_EMAIL,
+			UF_NAME,
+			UF_LOGIN,
+			UF_PASSWORD,
+			UF_IS_KNO,
+			UF_NADZOR_ORGAN_ID
+		FROM 
+			z_api_users
+		WHERE
+			ID = ? AND UF_ACTIVE = 'Y'`,
+		id,
+	).Scan(
+		&user.ID,
+		&user.Email,
+		&user.Name,
+		&user.Login,
+		&user.Password,
+		&isKNO,
+		&nadzonOrganID,
+	); err != nil {
+		return user, err
+	}
+	user.IsKNO = isKNO.Bool
+	user.NadzonOrganID = int(nadzonOrganID.Int16)
 	return user, nil
 }
