@@ -57,7 +57,7 @@ func (s *server) configureRouter() {
 		v1 := api.Group("/v1", s.ErrorHandler)
 		{
 			v1.Use(middleware.Logger())
-			v1.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(2)))
+			v1.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(10)))
 			v1.POST("/token", s.handleToken)
 			v1.POST("/login", s.login)
 			authGroup := v1.Group("")
@@ -72,6 +72,7 @@ func (s *server) configureRouter() {
 				authGroup.POST("/consultation", s.addConsultation)
 				authGroup.PATCH("/consultation", s.applyConsultation)
 				authGroup.DELETE("/consultation", s.deleteConsultation)
+				authGroup.GET("/notification", s.getNotificationList)
 			}
 		}
 	}

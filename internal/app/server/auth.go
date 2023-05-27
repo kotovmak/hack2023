@@ -72,6 +72,7 @@ func (s *server) login(c echo.Context) error {
 
 	// Set custom claims
 	claims := &model.Claims{
+		ID:            user.ID,
 		Login:         user.Login,
 		Email:         user.Email,
 		Name:          user.Name,
@@ -173,6 +174,7 @@ func (s *server) handleToken(c echo.Context) error {
 
 	// Set custom claims
 	newClaims := &model.Claims{
+		ID:            user.ID,
 		Login:         user.Login,
 		Email:         user.Email,
 		Name:          user.Name,

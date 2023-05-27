@@ -68,9 +68,7 @@ func (s *server) addConsultation(c echo.Context) error {
 	if err := c.Bind(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if claims.ID > 0 {
-		cl.UserID = claims.ID
-	}
+	cl.UserID = claims.ID
 	cl.VKSLink = "https://peregovorka.mos.ru/" + uuid.New().String()
 	if err := c.Validate(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
