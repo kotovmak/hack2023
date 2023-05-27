@@ -298,6 +298,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/notification": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "список уведомлений текущего пользователя",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "consultation"
+                ],
+                "summary": "список уведомлений текущего пользователя",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Notification"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/slot": {
             "get": {
                 "security": [
@@ -510,8 +547,7 @@ const docTemplate = `{
                 "control_type_id",
                 "nadzor_organ_id",
                 "slot_id",
-                "time",
-                "user_id"
+                "time"
             ],
             "properties": {
                 "consult_topic_id": {
@@ -608,6 +644,23 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Notification": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }

@@ -67,7 +67,6 @@ definitions:
     - nadzor_organ_id
     - slot_id
     - time
-    - user_id
     type: object
   model.Consultations:
     properties:
@@ -100,6 +99,17 @@ definitions:
       id:
         type: integer
       name:
+        type: string
+    type: object
+  model.Notification:
+    properties:
+      date:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      user_id:
         type: string
     type: object
   model.PravAct:
@@ -343,6 +353,29 @@ paths:
       summary: Получение токена авторизации
       tags:
       - auth
+  /v1/notification:
+    get:
+      description: список уведомлений текущего пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Notification'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: список уведомлений текущего пользователя
+      tags:
+      - consultation
   /v1/slot:
     get:
       description: список доступных слотов
