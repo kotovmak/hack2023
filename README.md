@@ -9,5 +9,5 @@ http://hack.torbeno.ru/api/swagger/
 ```
 
 ## How it work
-![image](2023-05-27 22.06.10.jpg)
-![image](2023-05-27 22.06.18.jpg)
+![image](2023-05-27-22.06.10.jpg)
+![image](2023-05-27-22.06.18.jpg)
