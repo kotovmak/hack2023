@@ -8,6 +8,8 @@ https://leaders2023.innoagency.ru
 http://hack.torbeno.ru/api/swagger/
 ```
 
-## How it work
+# Получение ответа в чате
 ![image](2023-05-27-22.06.10.jpg)
+
+# Запись на консультацию
 ![image](2023-05-27-22.06.18.jpg)
