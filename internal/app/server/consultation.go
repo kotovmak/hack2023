@@ -53,22 +53,19 @@ func (s *server) getSlotList(c echo.Context) error {
 	isKNO := claims.IsKNO
 
 	cl, err := s.store.GetConsultationList(c.Request().Context())
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		log.Print(err)
 		return echo.ErrInternalServerError
 	}
 
 	tl, err := s.store.GetSlotList(c.Request().Context(), isKNO)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		log.Print(err)
-		if err == sql.ErrNoRows {
-			return sql.ErrNoRows
-		}
 		return echo.ErrInternalServerError
 	}
 	sl := make(map[string][]model.Slot)
 	for _, p := range tl {
-		if isKNO && cl[p.ID].ID > 0 {
+		if isKNO && cl[p.ID].UserID > 0 {
 			cons := cl[p.ID]
 			user, err := s.store.GetUserByID(c.Request().Context(), cl[p.ID].UserID)
 			if err != nil {
@@ -140,7 +137,9 @@ func (s *server) addConsultation(c echo.Context) error {
 	if err := c.Bind(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	cl.UserID = claims.ID
+	if claims.ID > 0 {
+		cl.UserID = claims.ID
+	}
 	cl.VKSLink = "https://peregovorka.mos.ru/" + uuid.New().String()
 	if err := c.Validate(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
