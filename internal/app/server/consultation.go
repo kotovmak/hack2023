@@ -56,7 +56,7 @@ func (s *server) getConsultationList(c echo.Context) error {
 // @Param	date formData string true	"дата в формате '2006-02-01'"
 // @Param	question formData string true	"вопрос в свободной форме"
 // @Param	is_need_letter formData bool true	"нужно ли письменное разъяснение"
-// @Success 201 {object} model.Consultation
+// @Success 200 {object} model.Consultation
 // @Failure 400 {object} model.ResponseError
 // @Failure 500 {object} model.ResponseError
 // @Security ApiKeyAuth
@@ -142,7 +142,8 @@ func (s *server) deleteConsultation(c echo.Context) error {
 // @Produce json
 // @Param	id formData int true	"id консультации которую нужно подтвердить" minimum(1)
 // @Param	apply formData bool true	"Подтвердить или нет консультацию"
-// @Success 201 {object} model.Consultation
+// @Param	answer formData string true	"Текст письменного ответа на заданный вопрос"
+// @Success 200 {object} model.Consultation
 // @Failure 400 {object} model.ResponseError
 // @Failure 500 {object} model.ResponseError
 // @Security ApiKeyAuth
@@ -159,6 +160,7 @@ func (s *server) applyConsultation(c echo.Context) error {
 	if len(consultationID) == 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "id is required")
 	}
+	answer := c.FormValue("answer")
 
 	apply, err := strconv.ParseBool(c.FormValue("apply"))
 	if err != nil {
@@ -171,9 +173,10 @@ func (s *server) applyConsultation(c echo.Context) error {
 		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	cl.Answer = answer
 
 	if apply {
-		err = s.store.ApplyConsultation(c.Request().Context(), consultationID)
+		err = s.store.ApplyConsultation(c.Request().Context(), consultationID, answer)
 		if err != nil {
 			log.Print(err)
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -194,5 +197,49 @@ func (s *server) applyConsultation(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	return c.JSON(http.StatusOK, cl)
+}
+
+// answerConsultation Добавление письменного ответа со стороны КНО
+// answerConsultation godoc
+// @Summary Добавление письменного ответа со стороны КНО
+// @Tags consultation
+// @Description Добавление письменного ответа со стороны КНО
+// @Produce json
+// @Param	id formData int true	"id консультации" minimum(1)
+// @Param	answer formData string true	"Текст письменного ответа на заданный вопрос"
+// @Success 200 {object} model.Consultation
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Security ApiKeyAuth
+// @Router /v1/consultation [patch]
+func (s *server) answerConsultation(c echo.Context) error {
+	claims := c.Get("user").(*model.Claims)
+	isKNO := claims.IsKNO
+
+	if !isKNO {
+		return echo.NewHTTPError(http.StatusNotAcceptable, errOnlyKNO.Error())
+	}
+
+	consultationID := c.FormValue("id")
+	if len(consultationID) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "id is required")
+	}
+	answer := c.FormValue("answer")
+	if len(answer) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "answer is required")
+	}
+
+	cl, err := s.store.GetConsultation(c.Request().Context(), consultationID)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	cl.Answer = answer
+	err = s.store.ApplyConsultation(c.Request().Context(), consultationID, answer)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
 	return c.JSON(http.StatusOK, cl)
 }

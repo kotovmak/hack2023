@@ -25,6 +25,7 @@ type Consultation struct {
 	VKSLink        string    `json:"vks_link" form:"vks_link"`
 	VideoLink      string    `json:"video_link" form:"video_link"`
 	IsDeleted      bool      `json:"is_deleted" form:"is_deleted"`
+	Answer         string    `json:"answer" form:"answer"`
 }
 
 type CustomValidator struct {

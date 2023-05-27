@@ -35,12 +35,10 @@ func (s *server) getMessageList(c echo.Context) error {
 	}
 	if len(tl) == 0 {
 		date := time.Now()
-		dateExport := date.Format("2006-01-02")
 		m, err := s.store.AddMessage(c.Request().Context(), model.Message{
-			UserID:     claims.ID,
-			SendByID:   BOTID,
-			Date:       date,
-			DateExport: dateExport,
+			UserID:   claims.ID,
+			SendByID: BOTID,
+			Date:     date,
 			Text: `Приветствую, ` + claims.Name +
 				`На связи чат-бот.`,
 		})
@@ -49,10 +47,9 @@ func (s *server) getMessageList(c echo.Context) error {
 		}
 		tl = append(tl, m)
 		m, err = s.store.AddMessage(c.Request().Context(), model.Message{
-			UserID:     claims.ID,
-			SendByID:   BOTID,
-			Date:       date,
-			DateExport: dateExport,
+			UserID:   claims.ID,
+			SendByID: BOTID,
+			Date:     date,
 			Text: `Я здесь, чтобы сэкономить ваше
 время.`,
 		})
@@ -61,10 +58,9 @@ func (s *server) getMessageList(c echo.Context) error {
 		}
 		tl = append(tl, m)
 		m, err = s.store.AddMessage(c.Request().Context(), model.Message{
-			UserID:     claims.ID,
-			SendByID:   BOTID,
-			Date:       date,
-			DateExport: dateExport,
+			UserID:   claims.ID,
+			SendByID: BOTID,
+			Date:     date,
 			Text: `Собрал ответы на популярные 
 вопросы органам контроля и информационные материалы.`,
 		})
@@ -76,7 +72,8 @@ func (s *server) getMessageList(c echo.Context) error {
 
 	cl := make(map[string][]model.Message)
 	for _, t := range tl {
-		cl[t.DateExport] = append(cl[t.DateExport], t)
+		dateExport := t.Date.Format("2006-01-02")
+		cl[dateExport] = append(cl[dateExport], t)
 	}
 
 	return c.JSON(http.StatusOK, cl)
@@ -104,7 +101,6 @@ func (s *server) addMessage(c echo.Context) error {
 	cl.UserID = claims.ID
 	cl.SendByID = claims.ID
 	cl.Date = time.Now()
-	cl.DateExport = cl.Date.Format("2006-01-02")
 	if err := c.Validate(&cl); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -117,11 +113,10 @@ func (s *server) addMessage(c echo.Context) error {
 	//TODO: поиск по ключевым словам
 
 	returnMessage := model.Message{
-		UserID:     cl.UserID,
-		SendByID:   BOTID,
-		Date:       time.Now().Add(time.Minute * 1),
-		DateExport: cl.DateExport,
-		Text:       "тут будет ответ бота",
+		UserID:   cl.UserID,
+		SendByID: BOTID,
+		Date:     time.Now().Add(time.Minute * 1),
+		Text:     "тут будет ответ бота",
 	}
 	cl, err = s.store.AddMessage(c.Request().Context(), returnMessage)
 	if err != nil {

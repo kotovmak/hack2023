@@ -70,6 +70,7 @@ func (s *server) configureRouter() {
 				authGroup.GET("/slot", s.getSlotList)
 				authGroup.GET("/consultation", s.getConsultationList)
 				authGroup.POST("/consultation", s.addConsultation)
+				authGroup.PUT("/consultation", s.answerConsultation)
 				authGroup.PATCH("/consultation", s.applyConsultation)
 				authGroup.DELETE("/consultation", s.deleteConsultation)
 				authGroup.GET("/notification", s.getNotificationList)

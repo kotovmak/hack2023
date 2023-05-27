@@ -46,7 +46,6 @@ func (s *Store) GetMessagesList(ctx context.Context, userID int) ([]model.Messag
 			return cl, err
 		}
 		p.Date = date.Time
-		p.DateExport = date.Time.Format("2006-01-02")
 		p.Text = text.String
 		cl = append(cl, p)
 	}

@@ -17,6 +17,8 @@ func (s *Store) GetConsultationList(ctx context.Context) (map[int]model.Consulta
 		isConfirmed  sql.NullBool
 		VKSLink      sql.NullString
 		videoLink    sql.NullString
+		isDeleted    sql.NullBool
+		answer       sql.NullString
 	)
 	data, err := s.db.QueryContext(
 		ctx,
@@ -33,7 +35,9 @@ func (s *Store) GetConsultationList(ctx context.Context) (map[int]model.Consulta
 			UF_IS_CONFIRMED,
 			UF_VKS_LINK,
 			UF_VIDEO_LINK,
-			UF_SLOT_ID
+			UF_SLOT_ID,
+			UF_IS_DELETED,
+			UF_ANSWER
 		FROM 
 			z_consultations
 		WHERE
@@ -59,6 +63,8 @@ func (s *Store) GetConsultationList(ctx context.Context) (map[int]model.Consulta
 			&VKSLink,
 			&videoLink,
 			&p.SlotID,
+			&isDeleted,
+			&answer,
 		)
 		if err != nil {
 			return cl, err
@@ -70,7 +76,8 @@ func (s *Store) GetConsultationList(ctx context.Context) (map[int]model.Consulta
 		p.IsNeedLetter = isNeedLetter.Bool
 		p.VKSLink = VKSLink.String
 		p.VideoLink = videoLink.String
-
+		p.IsDeleted = isDeleted.Bool
+		p.Answer = answer.String
 		cl[p.SlotID] = p
 	}
 	return cl, nil
@@ -150,6 +157,7 @@ func (s *Store) GetConsultation(ctx context.Context, consultationID string) (p m
 		VKSLink      sql.NullString
 		videoLink    sql.NullString
 		isDeleted    sql.NullBool
+		answer       sql.NullString
 	)
 	if err := s.db.QueryRowContext(ctx,
 		`SELECT 
@@ -166,7 +174,8 @@ func (s *Store) GetConsultation(ctx context.Context, consultationID string) (p m
 			UF_VKS_LINK,
 			UF_VIDEO_LINK,
 			UF_SLOT_ID,
-			UF_IS_DELETED
+			UF_IS_DELETED,
+			UF_ANSWER
 		FROM 
 			z_consultations
 		WHERE
@@ -187,6 +196,7 @@ func (s *Store) GetConsultation(ctx context.Context, consultationID string) (p m
 		&videoLink,
 		&p.SlotID,
 		&isDeleted,
+		&answer,
 	); err != nil {
 		return p, err
 	}
@@ -195,22 +205,25 @@ func (s *Store) GetConsultation(ctx context.Context, consultationID string) (p m
 	p.Question = question.String
 	p.IsConfirmed = isConfirmed.Bool
 	p.IsNeedLetter = isNeedLetter.Bool
-	p.IsDeleted = isDeleted.Bool
 	p.VKSLink = VKSLink.String
 	p.VideoLink = videoLink.String
+	p.IsDeleted = isDeleted.Bool
+	p.Answer = answer.String
 	return p, nil
 }
 
-func (s *Store) ApplyConsultation(ctx context.Context, consultationID string) error {
+func (s *Store) ApplyConsultation(ctx context.Context, consultationID string, answer string) error {
 	if _, err := s.db.QueryContext(
 		ctx,
 		`UPDATE 
 			z_consultations
 		SET
-			UF_IS_CONFIRMED = 1
+			UF_IS_CONFIRMED = 1,
+			UF_ANSWER = ?
 		WHERE
 			ID = ? AND (UF_IS_DELETED IS NULL OR UF_IS_DELETED = 0)
 		`,
+		answer,
 		consultationID,
 	); err != nil {
 		return err
