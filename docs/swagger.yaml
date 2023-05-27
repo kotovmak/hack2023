@@ -22,6 +22,15 @@ definitions:
         description: RefreshToken
         type: string
     type: object
+  model.Button:
+    properties:
+      id:
+        type: integer
+      link:
+        type: string
+      text:
+        type: string
+    type: object
   model.ConsultTopic:
     properties:
       id:
@@ -89,6 +98,21 @@ definitions:
         type: integer
       name:
         type: string
+    type: object
+  model.Message:
+    properties:
+      date_export:
+        type: string
+      id:
+        type: integer
+      send_by_id:
+        type: integer
+      text:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - text
     type: object
   model.NadzonOrgan:
     properties:
@@ -166,6 +190,81 @@ info:
   title: Hack2023
   version: "1.0"
 paths:
+  /v1/button:
+    get:
+      description: список кнопок чата
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Button'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: список кнопок чата
+      tags:
+      - consultation
+  /v1/chat:
+    get:
+      description: список сообщения чат-бота текущего пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: список сообщения чат-бота текущего пользователя
+      tags:
+      - consultation
+    post:
+      description: отправить сообщение чат-боту и получить ответ
+      parameters:
+      - description: текст сообщения
+        in: formData
+        minLength: 1
+        name: text
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/model.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: отправить сообщение чат-боту и получить ответ
+      tags:
+      - consultation
   /v1/consultation:
     delete:
       description: Отменить запись на консультацию

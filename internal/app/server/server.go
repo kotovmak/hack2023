@@ -73,6 +73,9 @@ func (s *server) configureRouter() {
 				authGroup.PATCH("/consultation", s.applyConsultation)
 				authGroup.DELETE("/consultation", s.deleteConsultation)
 				authGroup.GET("/notification", s.getNotificationList)
+				authGroup.GET("/chat", s.getMessageList)
+				authGroup.GET("/button", s.getButtonList)
+				authGroup.POST("/chat", s.addMessage)
 			}
 		}
 	}
