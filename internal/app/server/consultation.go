@@ -39,7 +39,7 @@ func (s *server) getConsultationList(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(http.StatusOK, tl)
+	return c.JSON(http.StatusOK, cl)
 }
 
 // addConsultation записаться на консультацию
