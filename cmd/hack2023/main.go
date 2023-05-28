@@ -14,7 +14,19 @@ import (
 
 // @title           Hack2023
 // @version         1.0
-// @description     API for flutter app
+// @description     Документация по задаче #2 команды "Just do it" участника хакатона leaders2023.innoagency.ru
+// @description
+// @description     В API реализована JWT токен OAuth 2.0 модель авторизации, с коротко-живущим ключом access_token и долгоживущим ключом refresh_token
+// @description
+// @description     Авторизация через header «Authorization: Bearer some_jwt_token»
+// @description
+// @description     Представитель бизнеса:
+// @description     login: user
+// @description     pwd: 123321
+// @description
+// @description     Представитель КНО:
+// @description     login: kno
+// @description     pwd: 123321
 
 // @host      hack.torbeno.ru
 // @BasePath  /api

@@ -456,7 +456,7 @@ const docTemplate = `{
         },
         "/v1/login": {
             "post": {
-                "description": "Получение токена авторизации",
+                "description": "Необходим для использования во всех остальных запросах",
                 "produces": [
                     "application/json"
                 ],
@@ -716,14 +716,14 @@ const docTemplate = `{
         },
         "/v1/user": {
             "get": {
-                "description": "Получение данных о пользователе",
+                "description": "Для представителя КНО есть дополнительные поля, необходимые для сложебных методов: Подтверждение консультации",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "auth"
                 ],
-                "summary": "Получение данных о пользователе",
+                "summary": "Получение данных о текущем авторизованном пользователе",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -749,14 +749,14 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Сохранить токен приложения пользователя",
+                "description": "Необходимо для дальнейшей рассылки push сообщений на телефоны",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "auth"
                 ],
-                "summary": "Сохранить токен приложения пользователя",
+                "summary": "Сохранение токена приложения пользователя",
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -1028,17 +1028,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.PravAct": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "model.ResponseError": {
             "type": "object",
             "properties": {
@@ -1101,12 +1090,6 @@ const docTemplate = `{
                         "$ref": "#/definitions/model.NadzonOrgan"
                     }
                 },
-                "prav_acts": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.PravAct"
-                    }
-                },
                 "services": {
                     "type": "array",
                     "items": {
@@ -1133,7 +1116,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Hack2023",
-	Description:      "API for flutter app",
+	Description:      "Документация по задаче #2 команды \"Just do it\" участника хакатона leaders2023.innoagency.ru\n\nВ API реализована JWT токен OAuth 2.0 модель авторизации, с коротко-живущим ключом access_token и долгоживущим ключом refresh_token\n\nАвторизация через header «Authorization: Bearer some_jwt_token»\n\nПредставитель бизнеса:\nlogin: user\npwd: 123321\n\nПредставитель КНО:\nlogin: kno\npwd: 123321",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

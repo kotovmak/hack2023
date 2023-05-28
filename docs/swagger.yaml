@@ -161,13 +161,6 @@ definitions:
       user_id:
         type: integer
     type: object
-  model.PravAct:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
   model.ResponseError:
     properties:
       error:
@@ -208,10 +201,6 @@ definitions:
         items:
           $ref: '#/definitions/model.NadzonOrgan'
         type: array
-      prav_acts:
-        items:
-          $ref: '#/definitions/model.PravAct'
-        type: array
       services:
         items:
           $ref: '#/definitions/model.Service'
@@ -220,7 +209,20 @@ definitions:
 host: hack.torbeno.ru
 info:
   contact: {}
-  description: API for flutter app
+  description: |-
+    Документация по задаче #2 команды "Just do it" участника хакатона leaders2023.innoagency.ru
+
+    В API реализована JWT токен OAuth 2.0 модель авторизации, с коротко-живущим ключом access_token и долгоживущим ключом refresh_token
+
+    Авторизация через header «Authorization: Bearer some_jwt_token»
+
+    Представитель бизнеса:
+    login: user
+    pwd: 123321
+
+    Представитель КНО:
+    login: kno
+    pwd: 123321
   title: Hack2023
   version: "1.0"
 paths:
@@ -510,7 +512,7 @@ paths:
       - consultation
   /v1/login:
     post:
-      description: Получение токена авторизации
+      description: Необходим для использования во всех остальных запросах
       parameters:
       - description: login
         in: formData
@@ -677,7 +679,8 @@ paths:
       - consultation
   /v1/user:
     get:
-      description: Получение данных о пользователе
+      description: 'Для представителя КНО есть дополнительные поля, необходимые для
+        сложебных методов: Подтверждение консультации'
       produces:
       - application/json
       responses:
@@ -695,11 +698,11 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ResponseError'
-      summary: Получение данных о пользователе
+      summary: Получение данных о текущем авторизованном пользователе
       tags:
       - auth
     post:
-      description: Сохранить токен приложения пользователя
+      description: Необходимо для дальнейшей рассылки push сообщений на телефоны
       produces:
       - application/json
       responses:
@@ -717,7 +720,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.ResponseError'
-      summary: Сохранить токен приложения пользователя
+      summary: Сохранение токена приложения пользователя
       tags:
       - auth
 securityDefinitions:

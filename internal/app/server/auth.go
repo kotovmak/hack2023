@@ -12,11 +12,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// getUser Получение данных о пользователе
+// getUser Получение данных о текущем авторизованном пользователе
 // getUser godoc
-// @Summary Получение данных о пользователе
+// @Summary Получение данных о текущем авторизованном пользователе
 // @Tags auth
-// @Description Получение данных о пользователе
+// @Description Для представителя КНО есть дополнительные поля, необходимые для сложебных методов: Подтверждение консультации
 // @Produce json
 // @Success 200 {object} []model.Account
 // @Failure 400 {object} model.ResponseError
@@ -37,11 +37,11 @@ func (s *server) getUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, tl)
 }
 
-// saveAppToken Сохранить токен приложения пользователя
+// saveAppToken Сохранение токена приложения пользователя
 // saveAppToken godoc
-// @Summary Сохранить токен приложения пользователя
+// @Summary Сохранение токена приложения пользователя
 // @Tags auth
-// @Description Сохранить токен приложения пользователя
+// @Description Необходимо для дальнейшей рассылки push сообщений на телефоны
 // @Produce json
 // @Success 201 {object} []model.Token
 // @Failure 400 {object} model.ResponseError
@@ -74,7 +74,7 @@ func (s *server) saveAppToken(c echo.Context) error {
 // login godoc
 // @Summary Получение токена авторизации
 // @Tags auth
-// @Description Получение токена авторизации
+// @Description Необходим для использования во всех остальных запросах
 // @Produce json
 // @Param login formData string true "login"
 // @Param password formData string true "password"
