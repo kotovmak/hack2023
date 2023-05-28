@@ -1,0 +1,726 @@
+{
+  "info": {
+    "_postman_id": "0dfebdc7-ff31-4fb9-9a0d-174f7eebd959",
+    "name": "hack2023",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14578000"
+  },
+  "item": [
+    {
+      "name": "/",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/api/",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/user",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/user",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/user",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "token",
+              "value": "dBf-dzB9T4CDyr7IZwmciJ:APA91bFkWJY10itE55M4Y1i3gofg3RTEBogfpvqoe5fNSnhTcE-bpuyuxkfjKbW_1IcHwxvQrM5fBgN6GdJPDJ87QaEwjp55HeBlM34z8WUQ1msj92DyxHfZJOsOqiXsO4OU1Ljcd6PZ",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/user",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/login",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "login",
+              "value": "user",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "123321",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/login",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/typelist",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/typelist",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "typelist"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/typelist",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "text",
+              "value": "труда",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/typelist",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "typelist"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/slot",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/slot",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "slot"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/faq",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/faq",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "faq"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/faq",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "text",
+              "value": "озеленение",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/faq",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "faq"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/chat",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/chat",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "chat"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/button",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/button",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "button"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/chat",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "text",
+              "value": "Как правильно оформить спиливание дерева",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/chat",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "chat"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/consultation",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/consultation",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "consultation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/notification",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true,
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": []
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/notification",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "notification"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/consultation",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "consultation_id",
+              "value": "13",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/consultation?id=20",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "consultation"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "20"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/consultation",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "time",
+              "value": "9:00-10:00",
+              "type": "text"
+            },
+            {
+              "key": "date",
+              "value": "2023-06-01T00:00:00Z",
+              "type": "text"
+            },
+            {
+              "key": "question",
+              "value": "some text",
+              "type": "text"
+            },
+            {
+              "key": "nadzor_organ_id",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "control_type_id",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "consult_topic_id",
+              "value": "2",
+              "type": "text"
+            },
+            {
+              "key": "user_id",
+              "value": "1",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "is_need_letter",
+              "value": "true",
+              "type": "text"
+            },
+            {
+              "key": "slot_id",
+              "value": "6",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/consultation",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "consultation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/consultation",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "id",
+              "value": "25",
+              "type": "text"
+            },
+            {
+              "key": "apply",
+              "value": "true",
+              "type": "text"
+            },
+            {
+              "key": "answer",
+              "value": "Ответ от КНО такой-то",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/consultation",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "consultation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "v1/consultation",
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "disabledSystemHeaders": {}
+      },
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "id",
+              "value": "15",
+              "type": "text"
+            },
+            {
+              "key": "answer",
+              "value": "Ответ от КНО такой-то",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{url}}/api/v1/consultation",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "consultation"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "let url         = pm.collectionVariables.get(\"url\") + '/api/v1/login';",
+          "let login       = pm.collectionVariables.get(\"login\");",
+          "let password    = pm.collectionVariables.get(\"password\");",
+          "",
+          "pm.sendRequest({",
+          "    url: url,",
+          "    method: 'POST',",
+          "    header: {",
+          "        'Content-Type': 'multipart/form-data',",
+          "          },",
+          "      body: {",
+          "          mode: 'formdata',",
+          "          formdata: [",
+          "            {",
+          "                key: \"login\",",
+          "                value: login,",
+          "                disabled: false,",
+          "                description: {",
+          "                    content:\"\",",
+          "                    type:\"text/plain\"",
+          "                }",
+          "            },",
+          "            {",
+          "                key: \"password\",",
+          "                value: password,",
+          "                disabled: false,",
+          "                description: {",
+          "                    content:\"\",",
+          "                    type:\"text/plain\"",
+          "                }",
+          "            }",
+          "        ]",
+          "      }",
+          "},  function(err, response) {",
+          "        const jsonResponse = response.json();",
+          "        pm.environment.set('token', jsonResponse.access_token)",
+          "});",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "http://hack.torbeno.ru",
+      "type": "string"
+    },
+    {
+      "key": "login",
+      "value": "user",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "123321",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
