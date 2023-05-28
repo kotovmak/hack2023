@@ -385,7 +385,58 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.FAQ"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.FAQ"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "список вопросов и ответов c фтльтрацией",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "consultation"
+                ],
+                "summary": "список вопросов и ответов c фтльтрацией",
+                "parameters": [
+                    {
+                        "minLength": 3,
+                        "type": "string",
+                        "description": "ключевые слова для фильтрации списка КНО",
+                        "name": "text",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.FAQ"
+                            }
                         }
                     },
                     "400": {
@@ -590,6 +641,54 @@ const docTemplate = `{
                     "consultation"
                 ],
                 "summary": "список надзорных органов, видов контроля, тем консультирования",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.TypeList"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "список надзорных органов с учетом фильтрации по ключевым словам",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "consultation"
+                ],
+                "summary": "список надзорных органов с учетом фильтрации по ключевым словам",
+                "parameters": [
+                    {
+                        "minLength": 3,
+                        "type": "string",
+                        "description": "ключевые слова для фильтрации списка КНО",
+                        "name": "text",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
