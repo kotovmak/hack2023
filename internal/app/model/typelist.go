@@ -22,11 +22,13 @@ type ControlType struct {
 	ID            int            `json:"id"`
 	Name          string         `json:"name"`
 	ConsultTopics []ConsultTopic `json:"consult_topics,omitempty"`
+	NadzonOrganID int            `json:"-"`
 }
 
 type ConsultTopic struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	ControlTypeID int    `json:"-"`
 }
 
 type PravAct struct {

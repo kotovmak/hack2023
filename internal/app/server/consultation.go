@@ -25,13 +25,33 @@ import (
 // @Router /v1/consultation [get]
 func (s *server) getConsultationList(c echo.Context) error {
 	tl, err := s.store.GetConsultationList(c.Request().Context())
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		log.Print(err)
 		return echo.ErrInternalServerError
 	}
-
+	gl, err := s.store.GetNadzorOrganList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
+	rt, err := s.store.GetControlTypeList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
+	re, err := s.store.GetConsultTopicList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
 	cl := &model.Consultations{}
 	for _, p := range tl {
+		n := gl[p.NadzonOrganID]
+		p.NadzonOrgan = &n
+		c := rt[p.ControlTypeID]
+		p.ControlType = &c
+		f := re[p.ConsultTopicID]
+		p.ConsultTopic = &f
 		if p.Date.Unix() > time.Now().Unix() {
 			cl.Active = append(cl.Active, p)
 		} else {

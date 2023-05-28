@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"hack2023/internal/app/model"
 	"log"
 	"net/http"
 
@@ -20,14 +21,48 @@ import (
 // @Security ApiKeyAuth
 // @Router /v1/typelist [get]
 func (s *server) getTypeList(c echo.Context) error {
+	topics := make(map[int][]model.ConsultTopic)
+	types := make(map[int][]model.ControlType)
+	tl := &model.TypeList{}
 
-	tl, err := s.store.GetTypeList(c.Request().Context())
-	if err != nil {
+	serviceList, err := s.store.GetServiceList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
 		log.Print(err)
-		if err == sql.ErrNoRows {
-			return sql.ErrNoRows
-		}
 		return echo.ErrInternalServerError
+	}
+	tl.Services = append(tl.Services, serviceList...)
+
+	pravActList, err := s.store.GetPravActList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
+	tl.PravActs = append(tl.PravActs, pravActList...)
+
+	consultTopics, err := s.store.GetConsultTopicList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	for _, p := range consultTopics {
+		topics[p.ControlTypeID] = append(topics[p.ControlTypeID], p)
+	}
+
+	controlTypes, err := s.store.GetControlTypeList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	for _, p := range controlTypes {
+		p.ConsultTopics = topics[p.ID]
+		types[p.NadzonOrganID] = append(types[p.NadzonOrganID], p)
+	}
+
+	nadzorOrgans, err := s.store.GetNadzorOrganList(c.Request().Context())
+	if err != nil && err != sql.ErrNoRows {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	for _, p := range nadzorOrgans {
+		p.ControlTypes = types[p.ID]
+		tl.NadzonOrgans = append(tl.NadzonOrgans, p)
 	}
 
 	return c.JSON(http.StatusOK, tl)
