@@ -99,6 +99,36 @@ func (s *Store) GetNadzorOrganList(ctx context.Context) (tl map[int]model.Nadzon
 	return tl, nil
 }
 
+func (s *Store) GetNadzorOrganFilteredList(ctx context.Context, text string) (tl map[int]model.NadzonOrgan, err error) {
+	tl = make(map[int]model.NadzonOrgan)
+	data, err := s.db.QueryContext(
+		ctx,
+		`SELECT 
+			ID,
+  		UF_NAME
+		FROM 
+			z_nadzor_organs
+		WHERE 
+			MATCH (UF_NAME) AGAINST (? IN BOOLEAN MODE)
+		`, text)
+	if err != nil && err != sql.ErrNoRows {
+		return tl, err
+	}
+	// Обход результатов
+	for data.Next() {
+		p := model.NadzonOrgan{}
+		err = data.Scan(
+			&p.ID,
+			&p.Name,
+		)
+		if err != nil && err != sql.ErrNoRows {
+			return tl, err
+		}
+		tl[p.ID] = p
+	}
+	return tl, nil
+}
+
 func (s *Store) GetConsultTopicList(ctx context.Context) (tl map[int]model.ConsultTopic, err error) {
 	tl = make(map[int]model.ConsultTopic)
 	data, err := s.db.QueryContext(

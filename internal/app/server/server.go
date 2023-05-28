@@ -67,6 +67,7 @@ func (s *server) configureRouter() {
 				}))
 				authGroup.GET("/user", s.getUser)
 				authGroup.GET("/typelist", s.getTypeList)
+				authGroup.POST("/typelist", s.searchKNO)
 				authGroup.GET("/faq", s.getFAQList)
 				authGroup.GET("/slot", s.getSlotList)
 				authGroup.GET("/consultation", s.getConsultationList)
