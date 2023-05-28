@@ -3,7 +3,6 @@ package model
 type TypeList struct {
 	NadzonOrgans []NadzonOrgan `json:"nadzor_organs"`
 	Services     []Service     `json:"services"`
-	PravActs     []PravAct     `json:"prav_acts"`
 }
 
 type NadzonOrgan struct {
@@ -32,6 +31,8 @@ type ConsultTopic struct {
 }
 
 type PravAct struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	NadzorOrganID int    `json:"-"`
+	ControlTypeID int    `json:"-"`
 }

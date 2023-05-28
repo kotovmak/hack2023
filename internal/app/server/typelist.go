@@ -32,13 +32,6 @@ func (s *server) getTypeList(c echo.Context) error {
 	}
 	tl.Services = append(tl.Services, serviceList...)
 
-	pravActList, err := s.store.GetPravActList(c.Request().Context())
-	if err != nil && err != sql.ErrNoRows {
-		log.Print(err)
-		return echo.ErrInternalServerError
-	}
-	tl.PravActs = append(tl.PravActs, pravActList...)
-
 	consultTopics, err := s.store.GetConsultTopicList(c.Request().Context())
 	if err != nil && err != sql.ErrNoRows {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -95,13 +88,6 @@ func (s *server) searchKNO(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 	tl.Services = append(tl.Services, serviceList...)
-
-	pravActList, err := s.store.GetPravActList(c.Request().Context())
-	if err != nil && err != sql.ErrNoRows {
-		log.Print(err)
-		return echo.ErrInternalServerError
-	}
-	tl.PravActs = append(tl.PravActs, pravActList...)
 
 	consultTopics, err := s.store.GetConsultTopicList(c.Request().Context())
 	if err != nil && err != sql.ErrNoRows {

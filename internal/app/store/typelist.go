@@ -71,6 +71,30 @@ func (s *Store) GetPravActList(ctx context.Context) (tl []model.PravAct, err err
 	return tl, nil
 }
 
+func (s *Store) SearchPravAct(ctx context.Context, text string) (cl model.PravAct, err error) {
+	if err := s.db.QueryRowContext(
+		ctx,
+		`SELECT 
+			ID,
+			UF_NAME,
+			UF_NADZOR_ORGAN_ID,
+			UF_CONTROL_TYPE_ID
+		FROM 
+			z_prav_acts
+		WHERE
+			MATCH (UF_NAME) AGAINST (? IN BOOLEAN MODE)
+		LIMIT 1
+		`, text).Scan(
+		&cl.ID,
+		&cl.Name,
+		&cl.NadzorOrganID,
+		&cl.ControlTypeID,
+	); err != nil && err != sql.ErrNoRows {
+		return cl, err
+	}
+	return cl, nil
+}
+
 func (s *Store) GetNadzorOrganList(ctx context.Context) (tl map[int]model.NadzonOrgan, err error) {
 	tl = make(map[int]model.NadzonOrgan)
 	data, err := s.db.QueryContext(

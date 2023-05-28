@@ -5,3 +5,9 @@ CREATE TABLE
         `UF_APP_TOKEN` varchar(300) COLLATE utf8_unicode_ci DEFAULT NULL,
         PRIMARY KEY (`ID`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
+
+ALTER TABLE `z_prav_acts` ADD FULLTEXT (`UF_NAME`);
+
+ALTER TABLE `z_nadzor_organs ` ADD FULLTEXT (`UF_NAME`);
+
+ALTER TABLE `z_faq ` ADD FULLTEXT (`UF_QUESTION`,`UF_ANSWER`);

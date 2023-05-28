@@ -110,7 +110,6 @@ func (s *server) addMessage(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	//TODO: поиск по ключевым словам
 	faq, err := s.store.SearchFAQ(c.Request().Context(), cl.Text)
 	if err != nil {
 		log.Print(err)
@@ -131,7 +130,30 @@ func (s *server) addMessage(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusCreated, cl)
+	clList := []model.Message{}
+	clList = append(clList, cl)
+
+	prav, err := s.store.SearchPravAct(c.Request().Context(), cl.Text)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	returnMessage = model.Message{
+		UserID:   cl.UserID,
+		SendByID: BOTID,
+		Date:     time.Now().Add(time.Minute * 1),
+		Text: `Вот что я нашел среди требований:
+` + prav.Name,
+	}
+	cl, err = s.store.AddMessage(c.Request().Context(), returnMessage)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	clList = append(clList, cl)
+
+	return c.JSON(http.StatusCreated, clList)
 }
 
 // getButtonList список кнопок чата
