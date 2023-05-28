@@ -7,5 +7,5 @@ type Notification struct {
 	Date       time.Time `json:"-"`
 	DateExport string    `json:"date"`
 	Text       string    `json:"text"`
-	UserID     string    `json:"user_id"`
+	UserID     int       `json:"user_id"`
 }

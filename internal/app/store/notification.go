@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"hack2023/internal/app/model"
+	"time"
 )
 
 func (s *Store) GetNotificationList(ctx context.Context, userID int) ([]model.Notification, error) {
@@ -47,4 +48,18 @@ func (s *Store) GetNotificationList(ctx context.Context, userID int) ([]model.No
 		cl = append(cl, p)
 	}
 	return cl, nil
+}
+
+func (s *Store) AddNotification(ctx context.Context, n model.Notification) error {
+	return s.db.QueryRowContext(
+		ctx,
+		`INSERT INTO 
+			z_notifications 
+			(UF_USER_ID, UF_DATE, UF_TEXT)
+		VALUES 
+			(?, ?, ?)`,
+		n.UserID,
+		time.Now(),
+		n.Text,
+	).Err()
 }

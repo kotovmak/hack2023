@@ -159,7 +159,7 @@ definitions:
       text:
         type: string
       user_id:
-        type: string
+        type: integer
     type: object
   model.PravAct:
     properties:

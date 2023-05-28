@@ -201,6 +201,18 @@ func (s *server) applyConsultation(c echo.Context) error {
 			log.Print(err)
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
+		push := &model.PushMessage{
+			Title: "Ответ от КНО",
+			Body:  "Ваша консультация подтверждена",
+		}
+		err = s.store.AddNotification(c.Request().Context(), model.Notification{
+			UserID: cl.UserID,
+			Text:   push.Body,
+		})
+		if err != nil {
+			log.Print(err)
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
 		cl.IsConfirmed = true
 		tokenList, err := s.store.GetAppTokenList(c.Request().Context(), cl.UserID)
 		if err != nil {
@@ -208,10 +220,7 @@ func (s *server) applyConsultation(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 		for _, v := range tokenList {
-			err = s.SendPush(c.Request().Context(), model.PushMessage{
-				Title: "Ответ от КНО",
-				Body:  "Ваша консультация подтверждена",
-			}, v.Token)
+			err = s.SendPush(c.Request().Context(), *push, v.Token)
 			if err != nil {
 				log.Print(err)
 				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
