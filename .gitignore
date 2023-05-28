@@ -8,3 +8,4 @@ cmd/.DS_Store
 /files/*
 public/assets
 node_modules
+*.json

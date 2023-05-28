@@ -193,6 +193,15 @@ definitions:
       time:
         type: string
     type: object
+  model.Token:
+    properties:
+      id:
+        type: integer
+      token:
+        type: string
+      user_id:
+        type: integer
+    type: object
   model.TypeList:
     properties:
       nadzor_organs:
@@ -687,6 +696,28 @@ paths:
           schema:
             $ref: '#/definitions/model.ResponseError'
       summary: Получение данных о пользователе
+      tags:
+      - auth
+    post:
+      description: Сохранить токен приложения пользователя
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/model.Token'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      summary: Сохранить токен приложения пользователя
       tags:
       - auth
 securityDefinitions:

@@ -202,6 +202,21 @@ func (s *server) applyConsultation(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 		cl.IsConfirmed = true
+		tokenList, err := s.store.GetAppTokenList(c.Request().Context(), cl.UserID)
+		if err != nil {
+			log.Print(err)
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		for _, v := range tokenList {
+			err = s.SendPush(c.Request().Context(), model.PushMessage{
+				Title: "Ответ от КНО",
+				Body:  "Ваша консультация подтверждена",
+			}, v.Token)
+			if err != nil {
+				log.Print(err)
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			}
+		}
 		return c.JSON(http.StatusOK, cl)
 	}
 

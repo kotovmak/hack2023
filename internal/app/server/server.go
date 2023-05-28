@@ -8,6 +8,7 @@ import (
 
 	_ "hack2023/docs"
 
+	"firebase.google.com/go/messaging"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -20,14 +21,16 @@ type server struct {
 	router *echo.Echo
 	store  *store.Store
 	config config.Config
+	push   *messaging.Client
 }
 
 // NewServer инициализируем сервер
-func NewServer(store *store.Store, config config.Config) *server {
+func NewServer(store *store.Store, push *messaging.Client, config config.Config) *server {
 	s := &server{
 		router: echo.New(),
 		store:  store,
 		config: config,
+		push:   push,
 	}
 
 	// Конфигурируем роутинг
@@ -66,6 +69,7 @@ func (s *server) configureRouter() {
 					ParseTokenFunc: s.ParseTokenFunc,
 				}))
 				authGroup.GET("/user", s.getUser)
+				authGroup.POST("/user", s.saveAppToken)
 				authGroup.GET("/typelist", s.getTypeList)
 				authGroup.POST("/typelist", s.searchKNO)
 				authGroup.GET("/faq", s.getFAQList)

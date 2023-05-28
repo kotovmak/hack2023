@@ -37,6 +37,39 @@ func (s *server) getUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, tl)
 }
 
+// saveAppToken Сохранить токен приложения пользователя
+// saveAppToken godoc
+// @Summary Сохранить токен приложения пользователя
+// @Tags auth
+// @Description Сохранить токен приложения пользователя
+// @Produce json
+// @Success 201 {object} []model.Token
+// @Failure 400 {object} model.ResponseError
+// @Failure 500 {object} model.ResponseError
+// @Router /v1/user [post]
+func (s *server) saveAppToken(c echo.Context) error {
+	claims := c.Get("user").(*model.Claims)
+	userID := claims.ID
+	token := c.FormValue("token")
+	if len(token) == 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "token is required")
+	}
+
+	tl := model.Token{UserID: userID, Token: token}
+	err := s.store.DeleteAppToken(c.Request().Context(), token)
+	if err != nil {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
+	tl, err = s.store.SaveAppToken(c.Request().Context(), tl)
+	if err != nil {
+		log.Print(err)
+		return echo.ErrInternalServerError
+	}
+
+	return c.JSON(http.StatusCreated, tl)
+}
+
 // login Получение токена авторизации
 // login godoc
 // @Summary Получение токена авторизации
@@ -55,19 +88,19 @@ func (s *server) login(c echo.Context) error {
 
 	// Throws unauthorized error
 	if len(login) == 0 || len(password) == 0 {
-		return echo.ErrBadRequest
+		return echo.NewHTTPError(http.StatusBadRequest, "login and password is required fields")
 	}
 
 	user, err := s.store.GetUserByLogin(c.Request().Context(), login)
 	if err != nil {
 		log.Print(err)
-		return echo.ErrUnauthorized
+		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
 		log.Print(err)
-		return echo.ErrUnauthorized
+		return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 	}
 
 	// Set custom claims

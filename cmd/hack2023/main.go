@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"hack2023/internal/app/config"
 	"hack2023/internal/app/server"
 	"hack2023/internal/app/store"
 	"log"
 	"net/http"
+
+	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 )
 
 // @title           Hack2023
@@ -34,7 +38,18 @@ func main() {
 		log.Print(err)
 	}
 
-	srv := server.NewServer(store, config)
+	ctx := context.Background()
+	opt := option.WithCredentialsFile(config.FireBaseFile)
+	app, err := firebase.NewApp(ctx, nil, opt)
+	if err != nil {
+		log.Print(err)
+	}
+	push, err := app.Messaging(ctx)
+	if err != nil {
+		log.Print(err)
+	}
+
+	srv := server.NewServer(store, push, config)
 
 	if err := srv.Start(config); err != nil && err != http.ErrServerClosed {
 		log.Print(err)

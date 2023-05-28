@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"hack2023/internal/app/model"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func (s *Store) SaveRefreshToken(ctx context.Context, userID int, token string) error {
@@ -21,6 +23,79 @@ func (s *Store) SaveRefreshToken(ctx context.Context, userID int, token string) 
 		userID,
 		token,
 		time.Now(),
+	).Err()
+}
+
+func (s *Store) SaveAppToken(ctx context.Context, token model.Token) (cl model.Token, err error) {
+	cl = token
+	stmt, err := s.db.PrepareContext(
+		ctx,
+		`INSERT INTO 
+			z_app_tokens 
+			(UF_USER_ID, UF_APP_TOKEN)
+		VALUES 
+			(?, ?)`,
+	)
+	if err != nil {
+		return cl, err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(
+		token.UserID,
+		token.Token,
+	)
+	if err != nil {
+		return cl, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return cl, err
+	}
+	cl.ID = int(id)
+	return cl, nil
+}
+
+func (s *Store) GetAppTokenList(ctx context.Context, userID int) ([]model.Token, error) {
+	cl := []model.Token{}
+	data, err := s.db.QueryContext(
+		ctx,
+		`SELECT 
+			ID,
+			UF_USER_ID,
+  		UF_APP_TOKEN
+		FROM 
+			z_app_tokens
+		WHERE
+			UF_USER_ID = ?
+		`, userID)
+	if err != nil && err != sql.ErrNoRows {
+		return cl, err
+	}
+	// Обход результатов
+	for data.Next() {
+		p := model.Token{}
+		err = data.Scan(
+			&p.ID,
+			&p.UserID,
+			&p.Token,
+		)
+		if err != nil {
+			return cl, err
+		}
+		cl = append(cl, p)
+	}
+	return cl, nil
+}
+
+func (s *Store) DeleteAppToken(ctx context.Context, token string) error {
+	return s.db.QueryRowContext(
+		ctx,
+		`DELETE from 
+			z_app_tokens
+		WHERE 
+			UF_APP_TOKEN = ?`,
+		token,
 	).Err()
 }
 

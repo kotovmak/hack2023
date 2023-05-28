@@ -17,3 +17,8 @@ type Version struct {
 	Version  string `json:"version"`
 	Revision string `json:"revision"`
 }
+
+type PushMessage struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}

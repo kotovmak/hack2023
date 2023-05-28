@@ -35,3 +35,9 @@ type Account struct {
 	IsKNO         bool   `json:"is_kno,omitempty"`
 	NadzonOrganID int    `json:"nadzor_organ_id,omitempty"`
 }
+
+type Token struct {
+	ID     int    `json:"id"`
+	Token  string `json:"token"`
+	UserID int    `json:"user_id"`
+}

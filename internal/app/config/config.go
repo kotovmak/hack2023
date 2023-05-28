@@ -8,13 +8,14 @@ import (
 )
 
 type Config struct {
-	Tier       string `envconfig:"APP_TIER" default:"test"`
-	Revision   string `envconfig:"REVISION" default:""`
-	Version    string `envconfig:"VERSION" default:"0.0.1"`
-	Host       string `envconfig:"APP_HOST" default:"localhost"`
-	Port       int    `envconfig:"APP_PORT" default:"8081"`
-	URL        string `envconfig:"DATABASE_URL" default:"root:password@tcp(localhost:3306)/hack2023?parseTime=true"`
-	SigningKey string `envconfig:"SIGNING_KEY" default:"some_secret_key"`
+	Tier         string `envconfig:"APP_TIER" default:"test"`
+	Revision     string `envconfig:"REVISION" default:""`
+	Version      string `envconfig:"VERSION" default:"0.0.1"`
+	Host         string `envconfig:"APP_HOST" default:"localhost"`
+	Port         int    `envconfig:"APP_PORT" default:"8081"`
+	URL          string `envconfig:"DATABASE_URL" default:"root:password@tcp(localhost:3306)/hack2023?parseTime=true"`
+	SigningKey   string `envconfig:"SIGNING_KEY" default:"some_secret_key"`
+	FireBaseFile string `envconfig:"FIREBASE_FILE" default:"open-control-hack-firebase-adminsdk-5hvln-1673919517.json"`
 }
 
 var (
