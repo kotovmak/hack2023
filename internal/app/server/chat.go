@@ -111,12 +111,19 @@ func (s *server) addMessage(c echo.Context) error {
 	}
 
 	//TODO: поиск по ключевым словам
+	faq, err := s.store.SearchFAQ(c.Request().Context(), cl.Text)
+	if err != nil {
+		log.Print(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
 
 	returnMessage := model.Message{
 		UserID:   cl.UserID,
 		SendByID: BOTID,
 		Date:     time.Now().Add(time.Minute * 1),
-		Text:     "тут будет ответ бота",
+		Text: `Вот что я нашел среди частых вопросов:
+Вопрос: ` + faq.Question + `
+Ответ: ` + faq.Answer,
 	}
 	cl, err = s.store.AddMessage(c.Request().Context(), returnMessage)
 	if err != nil {

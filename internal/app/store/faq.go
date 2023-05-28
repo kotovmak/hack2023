@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"hack2023/internal/app/model"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func (s *Store) GetFAQList(ctx context.Context) ([]model.FAQ, error) {
@@ -49,5 +51,43 @@ func (s *Store) GetFAQList(ctx context.Context) ([]model.FAQ, error) {
 		p.Question = question.String
 		cl = append(cl, p)
 	}
+	return cl, nil
+}
+
+func (s *Store) SearchFAQ(ctx context.Context, text string) (cl model.FAQ, err error) {
+	var (
+		question sql.NullString
+		answer   sql.NullString
+		date     sql.NullTime
+	)
+	if err := s.db.QueryRowContext(
+		ctx,
+		`SELECT 
+			ID,
+			UF_DATE,
+			UF_QUESTION,
+  		UF_ANSWER,
+			UF_NADZOR_ORGAN_ID,
+			UF_CONTROL_TYPE_ID,
+			UF_LIKE
+		FROM 
+			z_faq
+		WHERE
+			MATCH (UF_QUESTION,UF_ANSWER) AGAINST (? IN BOOLEAN MODE)
+		LIMIT 1
+		`, text).Scan(
+		&cl.ID,
+		&date,
+		&question,
+		&answer,
+		&cl.NadzorOrganID,
+		&cl.ControlTypeID,
+		&cl.Likes,
+	); err != nil && err != sql.ErrNoRows {
+		return cl, err
+	}
+	cl.Date = date.Time
+	cl.Answer = answer.String
+	cl.Question = question.String
 	return cl, nil
 }
