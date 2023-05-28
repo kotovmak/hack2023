@@ -40,8 +40,14 @@ definitions:
     type: object
   model.Consultation:
     properties:
+      answer:
+        type: string
+      consult_topic:
+        $ref: '#/definitions/model.ConsultTopic'
       consult_topic_id:
         type: integer
+      control_type:
+        $ref: '#/definitions/model.ControlType'
       control_type_id:
         type: integer
       date:
@@ -54,6 +60,8 @@ definitions:
         type: boolean
       is_need_letter:
         type: boolean
+      nadzor_organ:
+        $ref: '#/definitions/model.NadzonOrgan'
       nadzor_organ_id:
         type: integer
       question:
@@ -99,9 +107,26 @@ definitions:
       name:
         type: string
     type: object
+  model.FAQ:
+    properties:
+      answer:
+        type: string
+      control_type_id:
+        type: integer
+      date:
+        type: string
+      id:
+        type: integer
+      likes:
+        type: integer
+      nadzor_organ_id:
+        type: integer
+      question:
+        type: string
+    type: object
   model.Message:
     properties:
-      date_export:
+      date:
         type: string
       id:
         type: integer
@@ -318,24 +343,24 @@ paths:
       tags:
       - consultation
     patch:
-      description: Подтверждение консультации со стороны КНО
+      description: Добавление письменного ответа со стороны КНО
       parameters:
-      - description: id консультации которую нужно подтвердить
+      - description: id консультации
         in: formData
         minimum: 1
         name: id
         required: true
         type: integer
-      - description: Подтвердить или нет консультацию
+      - description: Текст письменного ответа на заданный вопрос
         in: formData
-        name: apply
+        name: answer
         required: true
-        type: boolean
+        type: string
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/model.Consultation'
         "400":
@@ -348,7 +373,7 @@ paths:
             $ref: '#/definitions/model.ResponseError'
       security:
       - ApiKeyAuth: []
-      summary: Подтверждение консультации со стороны КНО
+      summary: Добавление письменного ответа со стороны КНО
       tags:
       - consultation
     post:
@@ -401,8 +426,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/model.Consultation'
         "400":
@@ -416,6 +441,29 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: записаться на консультацию
+      tags:
+      - consultation
+  /v1/faq:
+    get:
+      description: список вопросов и ответов
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FAQ'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseError'
+      security:
+      - ApiKeyAuth: []
+      summary: список вопросов и ответов
       tags:
       - consultation
   /v1/login:

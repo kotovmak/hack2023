@@ -248,8 +248,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Consultation"
                         }
@@ -319,36 +319,73 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Подтверждение консультации со стороны КНО",
+                "description": "Добавление письменного ответа со стороны КНО",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "consultation"
                 ],
-                "summary": "Подтверждение консультации со стороны КНО",
+                "summary": "Добавление письменного ответа со стороны КНО",
                 "parameters": [
                     {
                         "minimum": 1,
                         "type": "integer",
-                        "description": "id консультации которую нужно подтвердить",
+                        "description": "id консультации",
                         "name": "id",
                         "in": "formData",
                         "required": true
                     },
                     {
-                        "type": "boolean",
-                        "description": "Подтвердить или нет консультацию",
-                        "name": "apply",
+                        "type": "string",
+                        "description": "Текст письменного ответа на заданный вопрос",
+                        "name": "answer",
                         "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Consultation"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/faq": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "список вопросов и ответов",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "consultation"
+                ],
+                "summary": "список вопросов и ответов",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FAQ"
                         }
                     },
                     "400": {
@@ -683,8 +720,17 @@ const docTemplate = `{
                 "time"
             ],
             "properties": {
+                "answer": {
+                    "type": "string"
+                },
+                "consult_topic": {
+                    "$ref": "#/definitions/model.ConsultTopic"
+                },
                 "consult_topic_id": {
                     "type": "integer"
+                },
+                "control_type": {
+                    "$ref": "#/definitions/model.ControlType"
                 },
                 "control_type_id": {
                     "type": "integer"
@@ -703,6 +749,9 @@ const docTemplate = `{
                 },
                 "is_need_letter": {
                     "type": "boolean"
+                },
+                "nadzor_organ": {
+                    "$ref": "#/definitions/model.NadzonOrgan"
                 },
                 "nadzor_organ_id": {
                     "type": "integer"
@@ -764,13 +813,39 @@ const docTemplate = `{
                 }
             }
         },
+        "model.FAQ": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string"
+                },
+                "control_type_id": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "nadzor_organ_id": {
+                    "type": "integer"
+                },
+                "question": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Message": {
             "type": "object",
             "required": [
                 "text"
             ],
             "properties": {
-                "date_export": {
+                "date": {
                     "type": "string"
                 },
                 "id": {
