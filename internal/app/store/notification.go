@@ -19,7 +19,8 @@ func (s *Store) GetNotificationList(ctx context.Context, userID int) ([]model.No
 			ID,
 			UF_DATE,
   		UF_TEXT,
-			UF_USER_ID
+			UF_USER_ID,
+			UF_CONSULTATION_ID
 		FROM 
 			z_notifications
 		WHERE
@@ -38,6 +39,7 @@ func (s *Store) GetNotificationList(ctx context.Context, userID int) ([]model.No
 			&date,
 			&text,
 			&p.UserID,
+			&p.ConsultationID,
 		)
 		if err != nil {
 			return cl, err
@@ -55,11 +57,12 @@ func (s *Store) AddNotification(ctx context.Context, n model.Notification) error
 		ctx,
 		`INSERT INTO 
 			z_notifications 
-			(UF_USER_ID, UF_DATE, UF_TEXT)
+			(UF_USER_ID, UF_DATE, UF_TEXT, UF_CONSULTATION_ID)
 		VALUES 
-			(?, ?, ?)`,
+			(?, ?, ?, ?)`,
 		n.UserID,
 		time.Now(),
 		n.Text,
+		n.ConsultationID,
 	).Err()
 }

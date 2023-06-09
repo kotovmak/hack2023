@@ -5,6 +5,7 @@ import (
 	"hack2023/internal/app/model"
 	"hack2023/internal/app/system"
 	"log"
+	"strconv"
 
 	"net/http"
 
@@ -39,7 +40,7 @@ func (s *server) handleVersion(ctx echo.Context) error {
 	})
 }
 
-func (s *server) SendPush(ctx context.Context, mess model.PushMessage, token string) error {
+func (s *server) SendPush(ctx context.Context, mess model.PushMessage, token string, consultationID int) error {
 	apsData := make(map[string]interface{})
 	apsData["text"] = "here"
 	pushMessage := &messaging.Message{
@@ -47,12 +48,14 @@ func (s *server) SendPush(ctx context.Context, mess model.PushMessage, token str
 		Android: &messaging.AndroidConfig{
 			Priority: "high",
 			Data: map[string]string{
-				"apns-priority": "10",
+				"apns-priority":   "10",
+				"consultation-id": strconv.Itoa(consultationID),
 			},
 		},
 		APNS: &messaging.APNSConfig{
 			Headers: map[string]string{
-				"apns-priority": "10",
+				"apns-priority":   "10",
+				"consultation-id": strconv.Itoa(consultationID),
 			},
 			Payload: &messaging.APNSPayload{
 				Aps: &messaging.Aps{
@@ -68,6 +71,7 @@ func (s *server) SendPush(ctx context.Context, mess model.PushMessage, token str
 	pushMessage.Android.Notification = &messaging.AndroidNotification{
 		Title: mess.Title,
 		Body:  mess.Body,
+		Tag:   "some",
 	}
 	_, err := s.push.Send(ctx, pushMessage)
 	if err != nil {

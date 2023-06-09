@@ -205,9 +205,15 @@ func (s *server) applyConsultation(c echo.Context) error {
 			Title: "Ответ от КНО",
 			Body:  "Ваша консультация подтверждена",
 		}
+		id, err := strconv.Atoi(consultationID)
+		if err != nil {
+			log.Print(err)
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
 		err = s.store.AddNotification(c.Request().Context(), model.Notification{
-			UserID: cl.UserID,
-			Text:   push.Body,
+			UserID:         cl.UserID,
+			Text:           push.Body,
+			ConsultationID: id,
 		})
 		if err != nil {
 			log.Print(err)
@@ -220,7 +226,7 @@ func (s *server) applyConsultation(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 		for _, v := range tokenList {
-			err = s.SendPush(c.Request().Context(), *push, v.Token)
+			err = s.SendPush(c.Request().Context(), *push, v.Token, cl.ID)
 			if err != nil {
 				log.Print(err)
 				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

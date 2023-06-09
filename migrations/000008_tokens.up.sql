@@ -11,3 +11,8 @@ ALTER TABLE `z_prav_acts` ADD FULLTEXT (`UF_NAME`);
 ALTER TABLE `z_nadzor_organs ` ADD FULLTEXT (`UF_NAME`);
 
 ALTER TABLE `z_faq ` ADD FULLTEXT (`UF_QUESTION`,`UF_ANSWER`);
+
+ALTER TABLE
+    `sitemanager`.`z_notifications`
+ADD
+    COLUMN `UF_CONSULTATION_ID` int(18) NOT NULL;
