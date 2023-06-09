@@ -133,7 +133,7 @@ func (s *Store) GetNadzorOrganFilteredList(ctx context.Context, text string) (tl
 		FROM 
 			z_nadzor_organs
 		WHERE 
-			MATCH (UF_NAME) AGAINST (? IN BOOLEAN MODE)
+			UF_NAME LIKE CONCAT('%',?,'%')
 		`, text)
 	if err != nil && err != sql.ErrNoRows {
 		return tl, err
