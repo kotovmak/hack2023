@@ -14,11 +14,11 @@ func (s *Store) GetSlotList(ctx context.Context, isKNO bool) (sl []model.Slot, e
 		FROM 
 			z_slots
 		WHERE
-			UF_DATE > CONCAT(CURDATE(), ' 00:00:00')
+			UF_DATE > CURDATE()
 		`
 	if !isKNO {
 		query += `
-			AND UF_IS_BUSY IS NULL OR UF_IS_BUSY = 0
+			AND (UF_IS_BUSY IS NULL OR UF_IS_BUSY = 0)
 		`
 	}
 	data, err := s.db.QueryContext(ctx, query)
