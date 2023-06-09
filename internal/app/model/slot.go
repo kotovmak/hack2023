@@ -9,3 +9,6 @@ type Slot struct {
 	DateExport   string        `json:"date"`
 	Consultation *Consultation `json:"consultation,omitempty"`
 }
+
+type SlotList map[string][]Slot
+type SlotWeek map[string][]SlotList

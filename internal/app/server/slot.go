@@ -5,6 +5,7 @@ import (
 	"hack2023/internal/app/model"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -35,7 +36,8 @@ func (s *server) getSlotList(c echo.Context) error {
 		log.Print(err)
 		return echo.ErrInternalServerError
 	}
-	sl := make(map[string][]model.Slot)
+	sw := make(model.SlotWeek)
+	sl := make(model.SlotList)
 	for _, p := range tl {
 		if isKNO && cl[p.ID].UserID > 0 {
 			cons := cl[p.ID]
@@ -49,6 +51,23 @@ func (s *server) getSlotList(c echo.Context) error {
 		}
 		sl[p.DateExport] = append(sl[p.DateExport], p)
 	}
+	for i, p := range sl {
+		date := p[0].Date
+		start := weekStartDate(date)
+		start = start.AddDate(0, 0, 0)
+		end := start.AddDate(0, 0, 7)
+		startExport := start.Format("2 Jan")
+		endExport := end.Format("2 Jan")
+		s := make(model.SlotList)
+		s[i] = sl[i]
+		sw[startExport+" - "+endExport] = append(sw[startExport+" - "+endExport], s)
+	}
 
-	return c.JSON(http.StatusOK, sl)
+	return c.JSON(http.StatusOK, sw)
+}
+
+func weekStartDate(date time.Time) time.Time {
+	offset := (int(time.Monday) - int(date.Weekday()) - 7) % 7
+	result := date.Add(time.Duration(offset*24) * time.Hour)
+	return result
 }

@@ -21,6 +21,7 @@ func (s *Store) GetSlotList(ctx context.Context, isKNO bool) (sl []model.Slot, e
 			AND (UF_IS_BUSY IS NULL OR UF_IS_BUSY = 0)
 		`
 	}
+
 	data, err := s.db.QueryContext(ctx, query)
 	if err != nil && err != sql.ErrNoRows {
 		return sl, err
