@@ -59,11 +59,13 @@ func (s *Store) SearchFAQ(ctx context.Context, text string) (cl model.FAQ, err e
 		question sql.NullString
 		answer   sql.NullString
 		date     sql.NullTime
+		idx      float64
 	)
 	if err := s.db.QueryRowContext(
 		ctx,
 		`SELECT 
 			ID,
+			MATCH (UF_QUESTION,UF_ANSWER) AGAINST (? IN BOOLEAN MODE) as IDX,
 			UF_DATE,
 			UF_QUESTION,
   		UF_ANSWER,
@@ -75,8 +77,9 @@ func (s *Store) SearchFAQ(ctx context.Context, text string) (cl model.FAQ, err e
 		WHERE
 			MATCH (UF_QUESTION,UF_ANSWER) AGAINST (? IN BOOLEAN MODE)
 		LIMIT 1
-		`, text).Scan(
+		`, text, text).Scan(
 		&cl.ID,
+		&idx,
 		&date,
 		&question,
 		&answer,

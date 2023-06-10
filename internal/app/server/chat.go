@@ -93,6 +93,7 @@ func (s *server) getMessageList(c echo.Context) error {
 // @Router /v1/chat [post]
 func (s *server) addMessage(c echo.Context) error {
 	claims := c.Get("user").(*model.Claims)
+	text := c.FormValue("text")
 
 	cl := model.Message{}
 	if err := c.Bind(&cl); err != nil {
@@ -110,7 +111,7 @@ func (s *server) addMessage(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	faq, err := s.store.SearchFAQ(c.Request().Context(), cl.Text)
+	faq, err := s.store.SearchFAQ(c.Request().Context(), text)
 	if err != nil {
 		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -133,7 +134,7 @@ func (s *server) addMessage(c echo.Context) error {
 	clList := []model.Message{}
 	clList = append(clList, cl)
 
-	prav, err := s.store.SearchPravAct(c.Request().Context(), cl.Text)
+	prav, err := s.store.SearchPravAct(c.Request().Context(), text)
 	if err != nil {
 		log.Print(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
