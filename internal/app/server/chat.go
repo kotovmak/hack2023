@@ -39,8 +39,8 @@ func (s *server) getMessageList(c echo.Context) error {
 			UserID:   claims.ID,
 			SendByID: BOTID,
 			Date:     date,
-			Text: `Приветствую, ` + claims.Name +
-				`На связи чат-бот.`,
+			Text: `Приветствую, ` + claims.Name + `
+На связи чат-бот.`,
 		})
 		if err != nil {
 			return echo.ErrInternalServerError
