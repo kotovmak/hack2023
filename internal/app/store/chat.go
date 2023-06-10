@@ -26,7 +26,7 @@ func (s *Store) GetMessagesList(ctx context.Context, userID int) ([]model.Messag
 		WHERE
 			UF_USER_ID = ?
 		ORDER BY
-			UF_DATE ASC
+			ID ASC
 		`, userID)
 	if err != nil {
 		return cl, err
