@@ -50,8 +50,7 @@ func (s *server) getMessageList(c echo.Context) error {
 			UserID:   claims.ID,
 			SendByID: BOTID,
 			Date:     date,
-			Text: `Я здесь, чтобы сэкономить ваше
-время.`,
+			Text:     `Я здесь, чтобы сэкономить ваше время.`,
 		})
 		if err != nil {
 			return echo.ErrInternalServerError
