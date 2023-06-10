@@ -72,20 +72,23 @@ func (s *Store) GetPravActList(ctx context.Context) (tl []model.PravAct, err err
 }
 
 func (s *Store) SearchPravAct(ctx context.Context, text string) (cl model.PravAct, err error) {
+	var idx float64
 	if err := s.db.QueryRowContext(
 		ctx,
 		`SELECT 
 			ID,
+			MATCH (UF_NAME,UF_KEYWORDS) AGAINST (? IN BOOLEAN MODE) as IDX,
 			UF_NAME,
 			UF_NADZOR_ORGAN_ID,
 			UF_CONTROL_TYPE_ID
 		FROM 
 			z_prav_acts
 		WHERE
-			MATCH (UF_NAME) AGAINST (? IN BOOLEAN MODE)
+			MATCH (UF_NAME,UF_KEYWORDS) AGAINST (? IN BOOLEAN MODE)
 		LIMIT 1
-		`, text).Scan(
+		`, text, text).Scan(
 		&cl.ID,
+		&idx,
 		&cl.Name,
 		&cl.NadzorOrganID,
 		&cl.ControlTypeID,

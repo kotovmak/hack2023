@@ -63,7 +63,7 @@ func (s *server) getSlotList(c echo.Context) error {
 		sw[startExport+" - "+endExport] = append(sw[startExport+" - "+endExport], s)
 	}
 
-	return c.JSON(http.StatusOK, sw)
+	return c.JSON(http.StatusOK, sl)
 }
 
 func weekStartDate(date time.Time) time.Time {

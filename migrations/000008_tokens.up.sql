@@ -6,7 +6,7 @@ CREATE TABLE
         PRIMARY KEY (`ID`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
 
-ALTER TABLE `z_prav_acts` ADD FULLTEXT (`UF_NAME`);
+ALTER TABLE `z_prav_acts` ADD FULLTEXT (`UF_NAME`,`UF_KEYWORDS`);
 
 ALTER TABLE `z_nadzor_organs ` ADD FULLTEXT (`UF_NAME`);
 
@@ -16,3 +16,8 @@ ALTER TABLE
     `sitemanager`.`z_notifications`
 ADD
     COLUMN `UF_CONSULTATION_ID` int(18) NOT NULL;
+
+ALTER TABLE
+    `sitemanager`.`z_prav_acts`
+ADD
+    COLUMN `UF_KEYWORDS` text NULL;
